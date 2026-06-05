@@ -84,10 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "HARSHI'S Mehndi Art — Premium Henna Products & Artistry" },
       { name: "description", content: "Premium 100% natural mehndi products and professional henna artistry for weddings, festivals and every celebration." },
       { name: "author", content: "HARSHI'S Mehndi Art" },
-      { property: "og:title", content: "HARSHI'S Mehndi Art" },
-      { property: "og:description", content: "Premium natural mehndi products & professional artistry." },
+      { property: "og:title", content: "HARSHI'S Mehndi Art — Premium Henna Products & Artistry" },
+      { property: "og:description", content: "Premium 100% natural mehndi products and professional henna artistry for weddings, festivals and every celebration." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "HARSHI'S Mehndi Art — Premium Henna Products & Artistry" },
+      { name: "twitter:description", content: "Premium 100% natural mehndi products and professional henna artistry for weddings, festivals and every celebration." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/502827df-c00f-48cb-a3e8-44b06ef5829e" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/502827df-c00f-48cb-a3e8-44b06ef5829e" },
     ],
     links: [
       {
