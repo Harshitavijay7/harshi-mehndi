@@ -145,7 +145,7 @@ function Home() {
           {homeCategories.map((c) => (
             <Link
               key={c.name}
-              to="/store"
+              to="/gallery"
               className="group flex flex-col items-center gap-3 rounded-2xl border border-border/70 bg-card p-6 text-center shadow-soft transition-all hover:-translate-y-1 hover:border-gold/50 hover:shadow-gold"
             >
               <span className="text-4xl transition-transform group-hover:scale-110">{c.emoji}</span>
