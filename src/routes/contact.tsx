@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { brand, telLink, whatsappLink } from "@/data/brand";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -20,9 +21,10 @@ export const Route = createFileRoute("/contact")({
 });
 
 const info = [
-  { icon: Phone, label: "Call Us", value: "+91 98765 43210" },
-  { icon: Mail, label: "Email", value: "hello@harshismehndi.art" },
-  { icon: MapPin, label: "Studio", value: "Jaipur, Rajasthan, India" },
+  { icon: Phone, label: "Call Us", value: brand.phone, href: telLink() },
+  { icon: MessageCircle, label: "WhatsApp", value: brand.phone, href: whatsappLink() },
+  { icon: Instagram, label: "Instagram", value: brand.instagram, href: brand.instagramUrl },
+  { icon: MapPin, label: "Studio", value: "Gujarat, India", href: undefined },
 ];
 
 function Contact() {
