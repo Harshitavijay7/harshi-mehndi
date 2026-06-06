@@ -167,6 +167,31 @@ function Home() {
         </div>
       </section>
 
+      {/* Why Choose Us */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <SectionHeading eyebrow="Our Promise" title="Why Choose Us" />
+        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            { icon: Leaf, label: "Natural Mehndi" },
+            { icon: Gem, label: "Premium Quality" },
+            { icon: Wallet, label: "Affordable Pricing" },
+            { icon: HomeIcon, label: "Home Service" },
+            { icon: Sparkles, label: "Unique Designs" },
+            { icon: Zap, label: "Fast Booking" },
+            { icon: Lock, label: "Secure Payments" },
+            { icon: Heart, label: "Customer Satisfaction" },
+          ].map((w) => (
+            <div key={w.label} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 shadow-soft">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-gold text-gold-foreground">
+                <w.icon className="size-5" />
+              </div>
+              <span className="text-sm font-medium">{w.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
       {/* Testimonials */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         <SectionHeading eyebrow="Happy Clients" title="What Our Customers Say" />
