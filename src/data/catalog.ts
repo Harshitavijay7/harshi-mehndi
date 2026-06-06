@@ -56,21 +56,24 @@ export const products: Product[] = [
 ];
 
 export const serviceCategories = [
-  { id: "s1", title: "Bridal Mehndi", price: "₹8,000", desc: "Full hands & feet intricate bridal artistry with premium organic henna.", tag: "Most Loved" },
-  { id: "s2", title: "Engagement Mehndi", price: "₹3,500", desc: "Elegant front & back hand designs for your special day.", tag: "Packages" },
-  { id: "s3", title: "Festival Mehndi", price: "₹500 / hand", desc: "Quick, beautiful designs for Karva Chauth, Eid, Diwali & Teej.", tag: "Per Hand" },
-  { id: "s4", title: "Event Mehndi", price: "Custom", desc: "Bulk artist booking for parties, sangeet & corporate events.", tag: "Bulk Booking" },
-  { id: "s5", title: "Kids Mehndi", price: "₹300 / hand", desc: "Cute, simple and safe designs little ones adore.", tag: "Kids" },
-  { id: "s6", title: "Home Service", price: "On request", desc: "We come to you — choose your location, date and time slot.", tag: "At Home" },
+  { id: "s1", title: "Bridal Mehndi", price: "₹8,000", desc: "Full hand bridal designs & custom bridal packages with premium organic henna.", tag: "Most Loved" },
+  { id: "s2", title: "Arabic Mehndi", price: "₹1,500", desc: "Stylish Arabic patterns and modern flowing designs.", tag: "Trending" },
+  { id: "s3", title: "Engagement Mehndi", price: "₹3,500", desc: "Elegant front & back hand designs for your special day.", tag: "Packages" },
+  { id: "s4", title: "Baby Shower Mehndi", price: "₹2,500", desc: "Soft, joyful designs to celebrate your godh bharai.", tag: "Celebration" },
+  { id: "s5", title: "Festival Mehndi", price: "₹500 / hand", desc: "Quick, beautiful designs for Eid, Diwali, Teej & more.", tag: "Per Hand" },
+  { id: "s6", title: "Karwa Chauth Mehndi", price: "₹800 / hand", desc: "Traditional Karwa Chauth designs with your partner's name hidden in the art.", tag: "Festive" },
+  { id: "s7", title: "Diwali Mehndi", price: "₹600 / hand", desc: "Festive diya, rangoli & floral motifs for the festival of lights.", tag: "Festive" },
+  { id: "s8", title: "Event & Group Booking", price: "Custom", desc: "Bulk artist booking for parties, sangeet & corporate events.", tag: "Bulk Booking" },
+  { id: "s9", title: "Home Service Mehndi", price: "On request", desc: "We come to you — choose your location, date and time slot.", tag: "At Home" },
 ];
 
 export const homeCategories = [
   { name: "Bridal Mehndi", emoji: "💍" },
   { name: "Arabic Mehndi", emoji: "🌙" },
   { name: "Royal Mehndi", emoji: "👑" },
-  { name: "Festival Mehndi", emoji: "🪔" },
-  { name: "Kids Mehndi", emoji: "🧒" },
-  { name: "Mehndi Supplies", emoji: "🛍️" },
+  { name: "Traditional Mehndi", emoji: "🪔" },
+  { name: "Festival Mehndi", emoji: "✨" },
+  { name: "Engagement Mehndi", emoji: "💛" },
 ];
 
 export const testimonials = [
