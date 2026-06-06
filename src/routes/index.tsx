@@ -216,18 +216,42 @@ function Home() {
 
       {/* Instagram gallery */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
-        <SectionHeading eyebrow="@harshismehndiart" title="From Our Instagram" />
+        <SectionHeading eyebrow={brand.instagram} title="From Our Instagram" />
         <div className="mt-10 grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
+          {[igBridal, igArabic, igRoyal, igTraditional, igFestival, igEngagement].map((src, i) => (
+            <a
               key={i}
-              className="flex aspect-square items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-gold/20 text-3xl shadow-soft transition-transform hover:scale-105"
+              href={brand.instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group relative overflow-hidden rounded-xl shadow-soft"
             >
-              ✋
-            </div>
+              <img
+                src={src}
+                alt="Mehndi design by HARSHI'S Mehndi Art"
+                loading="lazy"
+                width={400}
+                height={400}
+                className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/40 opacity-0 transition-opacity group-hover:opacity-100">
+                <Instagram className="size-6 text-primary-foreground" />
+              </div>
+            </a>
           ))}
         </div>
+        <div className="mt-8 text-center">
+          <a
+            href={brand.instagramUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-gold px-7 py-3 text-base font-medium text-gold-foreground shadow-gold transition-opacity hover:opacity-90"
+          >
+            <Instagram className="size-5" /> Follow {brand.instagram}
+          </a>
+        </div>
       </section>
+
 
       {/* CTA */}
       <section className="bg-primary py-16 text-primary-foreground">
