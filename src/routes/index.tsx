@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Leaf, ShieldCheck, Truck, Gem, Lock, Star, Quote } from "lucide-react";
+import { Leaf, ShieldCheck, Truck, Gem, Lock, Star, Quote, Phone, Instagram, MessageCircle, Award, Home as HomeIcon, Sparkles, BadgeCheck, Wallet, Zap, Heart } from "lucide-react";
 import heroImg from "@/assets/hero-mehndi.jpg";
 import patternImg from "@/assets/mehndi-pattern.png";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ProductCard";
 import { products, homeCategories, testimonials } from "@/data/catalog";
+import { brand, telLink, whatsappLink } from "@/data/brand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
