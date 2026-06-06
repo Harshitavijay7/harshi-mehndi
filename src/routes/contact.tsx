@@ -38,19 +38,26 @@ function Contact() {
 
       <div className="mt-12 grid gap-8 lg:grid-cols-2">
         <div className="space-y-4">
-          {info.map((i) => (
-            <div key={i.label} className="flex items-center gap-4 rounded-2xl border border-border/70 bg-card p-5 shadow-soft">
-              <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <i.icon className="size-5" />
-              </div>
-              <div>
-                <div className="text-xs uppercase tracking-wide text-muted-foreground">{i.label}</div>
-                <div className="font-medium">{i.value}</div>
-              </div>
-            </div>
-          ))}
+          {info.map((i) => {
+            const Wrapper = (i.href ? "a" : "div") as "a";
+            return (
+              <Wrapper
+                key={i.label}
+                {...(i.href ? { href: i.href, target: "_blank", rel: "noreferrer" } : {})}
+                className="flex items-center gap-4 rounded-2xl border border-border/70 bg-card p-5 shadow-soft transition-colors hover:border-gold/50"
+              >
+                <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <i.icon className="size-5" />
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">{i.label}</div>
+                  <div className="font-medium">{i.value}</div>
+                </div>
+              </Wrapper>
+            );
+          })}
           <a
-            href="https://wa.me/919876543210"
+            href={whatsappLink()}
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-center gap-2 rounded-2xl bg-secondary p-5 font-semibold text-secondary-foreground shadow-soft transition-opacity hover:opacity-90"
