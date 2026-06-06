@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { CalendarCheck, CheckCircle2 } from "lucide-react";
+import { CalendarCheck, CheckCircle2, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { serviceCategories } from "@/data/catalog";
 import { cn } from "@/lib/utils";
+import { brand, whatsappLink } from "@/data/brand";
 
 export const Route = createFileRoute("/booking")({
   head: () => ({
@@ -123,13 +124,23 @@ function Booking() {
           </div>
         </div>
 
-        <Field label="Preferred Design / Notes">
-          <Textarea placeholder="Describe the design style you'd love (Arabic, royal, bridal...)" rows={3} />
+        <Field label="Special Requirements">
+          <Textarea placeholder="Describe the design style you'd love (Arabic, royal, bridal...) and any special requests" rows={3} />
         </Field>
 
-        <Button type="submit" variant="hero" size="lg" className="w-full">
-          Confirm Booking
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button type="submit" variant="hero" size="lg" className="w-full">
+            Submit Booking
+          </Button>
+          <a
+            href={whatsappLink(brand.whatsappMessage)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-[#25D366] px-8 text-base font-medium text-white shadow transition-opacity hover:opacity-90"
+          >
+            <MessageCircle className="size-5" /> WhatsApp Booking
+          </a>
+        </div>
       </form>
     </div>
   );
