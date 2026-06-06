@@ -15,6 +15,7 @@ import { CartProvider } from "@/lib/cart";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 
 function NotFoundComponent() {
   return (
@@ -140,6 +141,7 @@ function RootComponent() {
           </main>
           <Footer />
         </div>
+        <WhatsAppFloat />
         <Toaster />
       </CartProvider>
     </QueryClientProvider>
