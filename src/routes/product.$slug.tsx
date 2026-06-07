@@ -176,7 +176,7 @@ function ProductPage() {
             <div className="mt-5 rounded-2xl border border-border/70 bg-muted/40 p-4">
               <h3 className="font-serif font-semibold">What's included</h3>
               <ul className="mt-2 space-y-1.5">
-                {product.includes.map((inc) => (
+                {product.includes.map((inc: string) => (
                   <li key={inc} className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Check className="size-4 text-secondary" /> {inc}
                   </li>
@@ -270,7 +270,7 @@ function ProductPage() {
       <section className="mt-16">
         <h2 className="font-serif text-2xl font-bold">Customer Reviews</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {product.customerReviews.map((r, i) => (
+          {product.customerReviews.map((r: Review, i: number) => (
             <div key={i} className="rounded-2xl border border-border/70 bg-card p-5 shadow-soft">
               <div className="flex items-center justify-between">
                 <span className="font-serif font-semibold">{r.name}</span>
