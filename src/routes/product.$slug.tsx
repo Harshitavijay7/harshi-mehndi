@@ -13,7 +13,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getProduct, products } from "@/data/catalog";
+import { getProduct, products, type Review } from "@/data/catalog";
 import { whatsappOrderLink } from "@/data/brand";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
