@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { Heart, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ const links = [
 ];
 
 export function Navbar() {
-  const { count } = useCart();
+  const { count, wishlist } = useCart();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
 
@@ -55,6 +55,16 @@ export function Navbar() {
           <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
             {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
           </Button>
+          <Link to="/wishlist" className="relative">
+            <Button variant="ghost" size="icon" aria-label="Wishlist">
+              <Heart className="size-5" />
+            </Button>
+            {wishlist.length > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-destructive text-[0.65rem] font-bold text-destructive-foreground">
+                {wishlist.length}
+              </span>
+            )}
+          </Link>
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon" aria-label="Cart">
               <ShoppingBag className="size-5" />

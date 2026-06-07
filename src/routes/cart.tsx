@@ -50,9 +50,14 @@ function Cart() {
             const price = product.discountPrice ?? product.price;
             return (
               <div key={product.id} className="flex gap-4 rounded-2xl border border-border/70 bg-card p-4 shadow-soft">
-                <div className="flex size-20 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-gold/20 text-3xl">
-                  🌿
-                </div>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  loading="lazy"
+                  width={1024}
+                  height={1024}
+                  className="size-20 shrink-0 rounded-xl object-cover"
+                />
                 <div className="flex flex-1 flex-col">
                   <div className="flex justify-between gap-2">
                     <div>
