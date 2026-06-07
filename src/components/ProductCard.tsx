@@ -14,38 +14,38 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-gold">
-      <Link to="/product/$slug" params={{ slug: product.slug }} className="relative block overflow-hidden">
-        <img
-          src={product.image}
-          alt={product.name}
-          loading="lazy"
-          width={1024}
-          height={1024}
-          className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+      <div className="relative overflow-hidden">
+        <Link to="/product/$slug" params={{ slug: product.slug }} className="block">
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            width={1024}
+            height={1024}
+            className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </Link>
         {product.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-gradient-gold px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-gold-foreground">
             {product.badge}
           </span>
         )}
         {off ? (
-          <span className="absolute right-3 top-3 rounded-full bg-destructive px-2 py-1 text-[0.65rem] font-bold text-destructive-foreground">
+          <span className="absolute left-3 top-9 rounded-full bg-destructive px-2 py-1 text-[0.65rem] font-bold text-destructive-foreground">
             -{off}%
           </span>
         ) : null}
-      </Link>
-
-      <button
-        onClick={() => {
-          toggleWishlist(product.id);
-          toast(wished ? "Removed from wishlist" : "Added to wishlist ❤️");
-        }}
-        className="absolute right-3 top-3 z-10 flex size-9 items-center justify-center rounded-full bg-background/90 text-foreground shadow-soft transition-colors hover:text-destructive sm:right-3"
-        style={{ position: "relative", alignSelf: "flex-end", marginTop: "-3rem", marginRight: "0.75rem" }}
-        aria-label="Wishlist"
-      >
-        <Heart className={cn("size-4", wished && "fill-destructive text-destructive")} />
-      </button>
+        <button
+          onClick={() => {
+            toggleWishlist(product.id);
+            toast(wished ? "Removed from wishlist" : "Added to wishlist ❤️");
+          }}
+          className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-background/90 text-foreground shadow-soft transition-colors hover:text-destructive"
+          aria-label="Wishlist"
+        >
+          <Heart className={cn("size-4", wished && "fill-destructive text-destructive")} />
+        </button>
+      </div>
 
       <div className="flex flex-1 flex-col p-4">
         <span className="text-[0.7rem] font-medium uppercase tracking-wide text-muted-foreground">
