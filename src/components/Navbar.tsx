@@ -14,7 +14,7 @@ const links = [
 ];
 
 export function Navbar() {
-  const { count } = useCart();
+  const { count, wishlist } = useCart();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
 
