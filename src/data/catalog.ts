@@ -46,11 +46,13 @@ export type Product = {
 };
 
 export const productCategories = [
-  "Mehndi Essentials",
+  "Mehndi Powder",
+  "Mehndi Oil",
+  "Cones & Sheets",
   "Aftercare Products",
   "Mehndi Kits",
-  "Professional Accessories",
-  "Artist Comfort Products",
+  "Practice Products",
+  "Artist Accessories",
 ] as const;
 
 const baseReviews: Review[] = [
