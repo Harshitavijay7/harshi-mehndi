@@ -1,8 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { createOrder } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -18,8 +20,11 @@ export const Route = createFileRoute("/cart")({
 
 function Cart() {
   const { items, setQty, remove, subtotal, clear } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [coupon, setCoupon] = useState("");
   const [applied, setApplied] = useState(0);
+  const [placing, setPlacing] = useState(false);
 
   const discount = Math.round(subtotal * applied);
   const taxable = subtotal - discount;
