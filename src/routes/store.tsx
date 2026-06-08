@@ -33,7 +33,12 @@ function Store() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<(typeof sorts)[number]["key"]>("popular");
 
-  const featured = useMemo(() => products.filter((p) => p.featured), []);
+  const { data: products = [], isLoading, isError } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+
+  const featured = useMemo(() => products.filter((p) => p.featured), [products]);
 
   const filtered = useMemo(() => {
     let list = products.filter(
@@ -46,7 +51,7 @@ function Store() {
     if (sort === "high") list = [...list].sort((a, b) => price(b) - price(a));
     if (sort === "popular") list = [...list].sort((a, b) => b.reviews - a.reviews);
     return list;
-  }, [cat, query, sort]);
+  }, [cat, query, sort, products]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
