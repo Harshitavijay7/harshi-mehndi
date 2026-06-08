@@ -103,9 +103,10 @@ function ProductPage() {
   const wished = wishlist.includes(product.id);
   const price = product.discountPrice ?? product.price;
 
+  const { data: allProducts = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const related = useMemo(
-    () => products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4),
-    [product],
+    () => allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4),
+    [allProducts, product],
   );
 
   const buyNow = () => {
