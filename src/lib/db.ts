@@ -1,0 +1,140 @@
+// Reusable database service functions for HARSHI'S Mehndi Art.
+// All queries run through the RLS-aware Supabase client.
+import { supabase } from "@/integrations/supabase/client";
+import type { Product, Review } from "@/data/catalog";
+import { resolveProductImage } from "@/lib/productImages";
+import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+
+export type ProductRow = Tables<"products">;
+export type OrderRow = Tables<"orders">;
+export type BookingRow = Tables<"bookings">;
+export type ProfileRow = Tables<"profiles">;
+
+/** Map a database row to the existing front-end Product shape (UI unchanged). */
+export function mapProduct(row: ProductRow): Product & { dbId: string } {
+  return {
+    dbId: row.id,
+    id: row.slug,
+    slug: row.slug,
+    name: row.name,
+    category: row.category,
+    price: Number(row.price),
+    discountPrice: row.discount_price != null ? Number(row.discount_price) : undefined,
+    size: row.size ?? undefined,
+    rating: Number(row.rating),
+    reviews: row.reviews,
+    inStock: row.in_stock,
+    stock: row.stock,
+    description: row.description,
+    includes: (row.includes as string[] | null) ?? undefined,
+    ingredients: row.ingredients ?? undefined,
+    image: resolveProductImage(row.image_key),
+    badge: row.badge ?? undefined,
+    bestSeller: row.best_seller,
+    featured: row.featured,
+    customerReviews: (row.customer_reviews as unknown as Review[]) ?? [],
+  };
+}
+
+// ===================== PRODUCTS =====================
+export async function fetchProducts(): Promise<(Product & { dbId: string })[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map(mapProduct);
+}
+
+export async function fetchProductBySlug(slug: string): Promise<(Product & { dbId: string }) | null> {
+  const { data, error } = await supabase.from("products").select("*").eq("slug", slug).maybeSingle();
+  if (error) throw error;
+  return data ? mapProduct(data) : null;
+}
+
+export async function fetchProductsAdmin(): Promise<ProductRow[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function createProduct(payload: TablesInsert<"products">) {
+  const { data, error } = await supabase.from("products").insert(payload).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateProduct(id: string, payload: Partial<ProductRow>) {
+  const { data, error } = await supabase.from("products").update(payload).eq("id", id).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteProduct(id: string) {
+  const { error } = await supabase.from("products").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ===================== ORDERS =====================
+export async function createOrder(payload: TablesInsert<"orders">) {
+  const { data, error } = await supabase.from("orders").insert(payload).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchMyOrders(): Promise<OrderRow[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function fetchAllOrders(): Promise<OrderRow[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateOrderStatus(id: string, status: string) {
+  const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+  if (error) throw error;
+}
+
+// ===================== BOOKINGS =====================
+export async function createBooking(payload: TablesInsert<"bookings">) {
+  const { data, error } = await supabase.from("bookings").insert(payload).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchAllBookings(): Promise<BookingRow[]> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateBookingStatus(id: string, status: string) {
+  const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+  if (error) throw error;
+}
+
+// ===================== CUSTOMERS =====================
+export async function fetchCustomers(): Promise<ProfileRow[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
