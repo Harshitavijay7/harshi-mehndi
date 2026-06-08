@@ -127,13 +127,22 @@ function Store() {
       </div>
 
       {/* Grid */}
-      <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
-        {filtered.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
-      {filtered.length === 0 && (
+      {isLoading ? (
+        <div className="mt-16 flex justify-center text-muted-foreground">
+          <Loader2 className="size-6 animate-spin" />
+        </div>
+      ) : isError ? (
+        <p className="mt-16 text-center text-muted-foreground">Couldn't load products. Please refresh.</p>
+      ) : (
+        <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
+          {filtered.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      )}
+      {!isLoading && !isError && filtered.length === 0 && (
         <p className="mt-16 text-center text-muted-foreground">No products found. Try another search.</p>
+
       )}
 
       {/* Wishlist link */}
