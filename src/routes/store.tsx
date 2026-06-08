@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, Sparkles, MessageCircle, Truck } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Search, Sparkles, MessageCircle, Truck, Loader2 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { products, productCategories } from "@/data/catalog";
+import { productCategories } from "@/data/catalog";
+import { fetchProducts } from "@/lib/db";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
