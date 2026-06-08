@@ -1,8 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { createOrder } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -18,8 +20,11 @@ export const Route = createFileRoute("/cart")({
 
 function Cart() {
   const { items, setQty, remove, subtotal, clear } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [coupon, setCoupon] = useState("");
   const [applied, setApplied] = useState(0);
+  const [placing, setPlacing] = useState(false);
 
   const discount = Math.round(subtotal * applied);
   const taxable = subtotal - discount;
@@ -124,9 +129,42 @@ function Cart() {
             variant="hero"
             size="lg"
             className="mt-5 w-full"
-            onClick={() => toast.success("Proceeding to secure checkout (demo)")}
+            disabled={placing}
+            onClick={async () => {
+              if (!user) {
+                toast.error("Please sign in to place your order.");
+                navigate({ to: "/auth" });
+                return;
+              }
+              setPlacing(true);
+              try {
+                await createOrder({
+                  user_id: user.id,
+                  customer_name: user.user_metadata?.full_name ?? user.email ?? "Customer",
+                  customer_email: user.email ?? null,
+                  items: items.map(({ product, qty }) => ({
+                    slug: product.slug,
+                    name: product.name,
+                    price: product.discountPrice ?? product.price,
+                    qty,
+                  })),
+                  subtotal,
+                  total,
+                  status: "pending",
+                  payment_method: "COD",
+                });
+                clear();
+                toast.success("Order placed successfully! We'll be in touch.");
+                navigate({ to: "/" });
+              } catch (err) {
+                toast.error("Couldn't place order. Please try again.");
+                console.error(err);
+              } finally {
+                setPlacing(false);
+              }
+            }}
           >
-            Proceed to Checkout
+            {placing ? "Placing order..." : "Proceed to Checkout"}
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
             UPI · Google Pay · PhonePe · Cards · COD

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Heart,
   ShoppingBag,
@@ -13,7 +14,8 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getProduct, products, type Review } from "@/data/catalog";
+import type { Review } from "@/data/catalog";
+import { fetchProductBySlug, fetchProducts } from "@/lib/db";
 import { whatsappOrderLink } from "@/data/brand";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
@@ -21,8 +23,8 @@ import { ProductCard } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params }) => {
-    const product = getProduct(params.slug);
+  loader: async ({ params }) => {
+    const product = await fetchProductBySlug(params.slug);
     if (!product) throw notFound();
     return { product };
   },
@@ -101,9 +103,10 @@ function ProductPage() {
   const wished = wishlist.includes(product.id);
   const price = product.discountPrice ?? product.price;
 
+  const { data: allProducts = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const related = useMemo(
-    () => products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4),
-    [product],
+    () => allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4),
+    [allProducts, product],
   );
 
   const buyNow = () => {

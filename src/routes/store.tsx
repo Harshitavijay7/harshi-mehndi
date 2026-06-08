@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, Sparkles, MessageCircle, Truck } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Search, Sparkles, MessageCircle, Truck, Loader2 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { products, productCategories } from "@/data/catalog";
+import { productCategories } from "@/data/catalog";
+import { fetchProducts } from "@/lib/db";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,7 +33,12 @@ function Store() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<(typeof sorts)[number]["key"]>("popular");
 
-  const featured = useMemo(() => products.filter((p) => p.featured), []);
+  const { data: products = [], isLoading, isError } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+
+  const featured = useMemo(() => products.filter((p) => p.featured), [products]);
 
   const filtered = useMemo(() => {
     let list = products.filter(
@@ -44,7 +51,7 @@ function Store() {
     if (sort === "high") list = [...list].sort((a, b) => price(b) - price(a));
     if (sort === "popular") list = [...list].sort((a, b) => b.reviews - a.reviews);
     return list;
-  }, [cat, query, sort]);
+  }, [cat, query, sort, products]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
@@ -120,13 +127,22 @@ function Store() {
       </div>
 
       {/* Grid */}
-      <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
-        {filtered.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
-      {filtered.length === 0 && (
+      {isLoading ? (
+        <div className="mt-16 flex justify-center text-muted-foreground">
+          <Loader2 className="size-6 animate-spin" />
+        </div>
+      ) : isError ? (
+        <p className="mt-16 text-center text-muted-foreground">Couldn't load products. Please refresh.</p>
+      ) : (
+        <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
+          {filtered.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      )}
+      {!isLoading && !isError && filtered.length === 0 && (
         <p className="mt-16 text-center text-muted-foreground">No products found. Try another search.</p>
+
       )}
 
       {/* Wishlist link */}
