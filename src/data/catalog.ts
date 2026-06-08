@@ -11,6 +11,10 @@ import imgSmallSpatula from "@/assets/products/small-spatula.jpg";
 import imgLargeSpatula from "@/assets/products/large-spatula.jpg";
 import imgStockingSet from "@/assets/products/stocking-set.jpg";
 import imgCushion from "@/assets/products/cushion.jpg";
+import imgPracticeHand from "@/assets/products/practice-hand.jpg";
+import imgPracticeLeg from "@/assets/products/practice-leg.jpg";
+import imgPins from "@/assets/products/pins.jpg";
+import imgPipingBags from "@/assets/products/piping-bags.jpg";
 
 export type Review = {
   name: string;
