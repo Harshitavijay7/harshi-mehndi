@@ -122,6 +122,14 @@
   --ring: oklch(0.7 0.16 150);
   --gradient-hero: linear-gradient(135deg, oklch(0.2 0.05 150 / 0.94), oklch(0.14 0.03 150 / 0.9));
   --gradient-gold: linear-gradient(135deg, oklch(0.82 0.13 88), oklch(0.72 0.13 75));
+
+  --sidebar: oklch(0.16 0.03 150);
+  --sidebar-foreground: oklch(0.96 0.01 120);
+  --sidebar-primary: oklch(0.7 0.16 150);
+  --sidebar-primary-foreground: oklch(0.14 0.03 150);
+  --sidebar-accent: oklch(0.24 0.04 150);
+  --sidebar-accent-foreground: oklch(0.96 0.01 120);
+  --sidebar-border: oklch(0.3 0.03 150);
 }
 
 @layer base {
