@@ -1,12 +1,23 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
-import { createOrder } from "@/lib/db";
+import { createOrder, uploadPaymentScreenshot } from "@/lib/db";
+import { brand, shippingFor, upiQrUrl, upiLink } from "@/data/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -18,6 +29,14 @@ export const Route = createFileRoute("/cart")({
   component: Cart,
 });
 
+const PAYMENT_METHODS = [
+  { key: "UPI", label: "UPI QR" },
+  { key: "Google Pay", label: "Google Pay" },
+  { key: "PhonePe", label: "PhonePe" },
+  { key: "Paytm", label: "Paytm" },
+  { key: "COD", label: "Cash on Delivery" },
+] as const;
+
 function Cart() {
   const { items, setQty, remove, subtotal, clear } = useCart();
   const { user } = useAuth();
@@ -25,12 +44,21 @@ function Cart() {
   const [coupon, setCoupon] = useState("");
   const [applied, setApplied] = useState(0);
   const [placing, setPlacing] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Checkout form
+  const [method, setMethod] = useState<(typeof PAYMENT_METHODS)[number]["key"]>("UPI");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [txnId, setTxnId] = useState("");
+  const [screenshot, setScreenshot] = useState<File | null>(null);
 
   const discount = Math.round(subtotal * applied);
   const taxable = subtotal - discount;
   const gst = Math.round(taxable * 0.18);
-  const shipping = taxable > 999 || taxable === 0 ? 0 : 49;
+  const shipping = shippingFor(taxable);
   const total = taxable + gst + shipping;
+  const isOnlinePayment = method !== "COD";
 
   if (items.length === 0) {
     return (
@@ -43,6 +71,63 @@ function Cart() {
         </Button>
       </div>
     );
+  }
+
+  function startCheckout() {
+    if (!user) {
+      toast.error("Please sign in to place your order.");
+      navigate({ to: "/auth" });
+      return;
+    }
+    setOpen(true);
+  }
+
+  async function placeOrder() {
+    if (!user) return;
+    if (!address.trim() || !phone.trim()) {
+      toast.error("Please enter your delivery address and phone number.");
+      return;
+    }
+    if (isOnlinePayment && !txnId.trim() && !screenshot) {
+      toast.error("Enter the transaction ID or upload a payment screenshot.");
+      return;
+    }
+    setPlacing(true);
+    try {
+      let screenshotPath: string | null = null;
+      if (screenshot) {
+        screenshotPath = await uploadPaymentScreenshot(screenshot, user.id);
+      }
+      await createOrder({
+        user_id: user.id,
+        customer_name: user.user_metadata?.full_name ?? user.email ?? "Customer",
+        customer_email: user.email ?? null,
+        customer_phone: phone,
+        shipping_address: address,
+        items: items.map(({ product, qty }) => ({
+          slug: product.slug,
+          name: product.name,
+          price: product.discountPrice ?? product.price,
+          qty,
+        })),
+        subtotal,
+        total,
+        status: "pending",
+        payment_method: method,
+        payment_status: isOnlinePayment ? "submitted" : "cod",
+        transaction_id: txnId || null,
+        payment_screenshot_path: screenshotPath,
+      });
+      clear();
+      setOpen(false);
+      toast.success("Order placed successfully! We'll be in touch.");
+      navigate({ to: "/" });
+    } catch (err) {
+      toast.error("Couldn't place order. Please try again.");
+      console.error(err);
+    } finally {
+      setPlacing(false);
+    }
   }
 
   return (
@@ -125,52 +210,108 @@ function Cart() {
             </div>
           </dl>
 
-          <Button
-            variant="hero"
-            size="lg"
-            className="mt-5 w-full"
-            disabled={placing}
-            onClick={async () => {
-              if (!user) {
-                toast.error("Please sign in to place your order.");
-                navigate({ to: "/auth" });
-                return;
-              }
-              setPlacing(true);
-              try {
-                await createOrder({
-                  user_id: user.id,
-                  customer_name: user.user_metadata?.full_name ?? user.email ?? "Customer",
-                  customer_email: user.email ?? null,
-                  items: items.map(({ product, qty }) => ({
-                    slug: product.slug,
-                    name: product.name,
-                    price: product.discountPrice ?? product.price,
-                    qty,
-                  })),
-                  subtotal,
-                  total,
-                  status: "pending",
-                  payment_method: "COD",
-                });
-                clear();
-                toast.success("Order placed successfully! We'll be in touch.");
-                navigate({ to: "/" });
-              } catch (err) {
-                toast.error("Couldn't place order. Please try again.");
-                console.error(err);
-              } finally {
-                setPlacing(false);
-              }
-            }}
-          >
-            {placing ? "Placing order..." : "Proceed to Checkout"}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Free shipping above ₹800 · Flat ₹50 across India · COD available
+          </p>
+
+          <Button variant="hero" size="lg" className="mt-5 w-full" onClick={startCheckout}>
+            Proceed to Checkout
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            UPI · Google Pay · PhonePe · Cards · COD
+            UPI · Google Pay · PhonePe · Paytm · COD
           </p>
         </div>
       </div>
+
+      {/* Payment dialog */}
+      <Dialog open={open} onOpenChange={(o) => !placing && setOpen(o)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Checkout · ₹{total}</DialogTitle>
+            <DialogDescription>Enter delivery details and choose how you'd like to pay.</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label className="mb-1.5 block">Delivery Address <span className="text-destructive">*</span></Label>
+              <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Full address with pincode" rows={2} />
+            </div>
+            <div>
+              <Label className="mb-1.5 block">Phone Number <span className="text-destructive">*</span></Label>
+              <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="10-digit number" />
+            </div>
+
+            <div>
+              <Label className="mb-1.5 block">Payment Method</Label>
+              <div className="flex flex-wrap gap-2">
+                {PAYMENT_METHODS.map((m) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => setMethod(m.key)}
+                    className={cn(
+                      "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                      method === m.key
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background hover:border-gold/50",
+                    )}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {isOnlinePayment && (
+              <div className="space-y-3 rounded-xl border border-border/70 bg-muted/30 p-4">
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <img
+                    src={upiQrUrl(total)}
+                    alt="UPI payment QR code"
+                    width={220}
+                    height={220}
+                    className="rounded-lg bg-white p-2"
+                  />
+                  <p className="text-sm">
+                    Pay <span className="font-semibold text-primary">₹{total}</span> to UPI ID
+                  </p>
+                  <p className="font-mono text-sm font-semibold">{brand.upiId}</p>
+                  <a href={upiLink(total)} className="text-xs font-medium text-secondary underline">
+                    Open in UPI app
+                  </a>
+                </div>
+                <div>
+                  <Label className="mb-1.5 block">Transaction / UTR ID</Label>
+                  <Input value={txnId} onChange={(e) => setTxnId(e.target.value)} placeholder="Enter UPI reference number" />
+                </div>
+                <div>
+                  <Label className="mb-1.5 block">Upload Payment Screenshot</Label>
+                  <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:border-primary">
+                    <Upload className="size-4" />
+                    {screenshot ? screenshot.name : "Choose image..."}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => setScreenshot(e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {!isOnlinePayment && (
+              <p className="rounded-xl border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground">
+                Pay ₹{total} in cash when your order is delivered.
+              </p>
+            )}
+
+            <Button variant="hero" size="lg" className="w-full" disabled={placing} onClick={placeOrder}>
+              {placing ? <><Loader2 className="size-4 animate-spin" /> Placing order...</> : `Place Order · ₹${total}`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
