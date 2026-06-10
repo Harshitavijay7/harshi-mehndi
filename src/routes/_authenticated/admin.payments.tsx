@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { fetchAllOrders } from "@/lib/db";
+import { fetchAllOrders, getPaymentScreenshotUrl } from "@/lib/db";
 import { formatINR, exportToCsv } from "@/lib/adminUtils";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/payments")({
   component: PaymentsPage,
@@ -17,6 +18,16 @@ function paymentStatus(status: string) {
   if (status === "cancelled") return "Refunded";
   if (status === "delivered" || status === "shipped") return "Paid";
   return "Pending";
+}
+
+async function viewScreenshot(path: string | null | undefined) {
+  if (!path) {
+    toast.error("No screenshot uploaded for this payment.");
+    return;
+  }
+  const url = await getPaymentScreenshotUrl(path);
+  if (url) window.open(url, "_blank");
+  else toast.error("Couldn't load screenshot.");
 }
 
 const TONE: Record<string, string> = {
