@@ -94,18 +94,20 @@ function PaymentsPage() {
         <table className="w-full text-sm">
           <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
-              <th className="p-3">Transaction ID</th>
+              <th className="p-3">Order ID</th>
               <th className="p-3">Customer</th>
               <th className="p-3">Amount</th>
               <th className="p-3">Method</th>
+              <th className="p-3">Txn / UTR</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Proof</th>
               <th className="p-3">Date</th>
             </tr>
           </thead>
           <tbody>
             {isLoading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-t border-border/60"><td className="p-3" colSpan={6}><Skeleton className="h-9 w-full" /></td></tr>
+                  <tr key={i} className="border-t border-border/60"><td className="p-3" colSpan={8}><Skeleton className="h-9 w-full" /></td></tr>
                 ))
               : rows.map((r) => (
                   <tr key={r.id} className="border-t border-border/60 hover:bg-muted/30">
@@ -113,14 +115,22 @@ function PaymentsPage() {
                     <td className="p-3 font-medium">{r.customer}</td>
                     <td className="p-3 font-semibold">{formatINR(r.amount)}</td>
                     <td className="p-3 capitalize text-muted-foreground">{r.method}</td>
+                    <td className="p-3 font-mono text-xs text-muted-foreground">{r.txn}</td>
                     <td className="p-3">
                       <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-semibold", TONE[r.status])}>{r.status}</span>
+                    </td>
+                    <td className="p-3">
+                      {r.screenshot ? (
+                        <button onClick={() => viewScreenshot(r.screenshot)} className="text-xs font-medium text-primary underline">View</button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="p-3 text-muted-foreground">{new Date(r.date).toLocaleDateString()}</td>
                   </tr>
                 ))}
             {!isLoading && rows.length === 0 && (
-              <tr><td colSpan={6} className="p-10 text-center text-muted-foreground">No transactions found.</td></tr>
+              <tr><td colSpan={8} className="p-10 text-center text-muted-foreground">No transactions found.</td></tr>
             )}
           </tbody>
         </table>
