@@ -85,6 +85,25 @@ export async function createOrder(payload: TablesInsert<"orders">) {
   return data;
 }
 
+/** Upload a payment screenshot to the private payments bucket; returns its storage path. */
+export async function uploadPaymentScreenshot(file: File, userId: string): Promise<string> {
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `${userId}/${Date.now()}.${ext}`;
+  const { error } = await supabase.storage.from("payments").upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) throw error;
+  return path;
+}
+
+/** Signed URL to view a private payment screenshot (admin use). */
+export async function getPaymentScreenshotUrl(path: string): Promise<string | null> {
+  const { data, error } = await supabase.storage.from("payments").createSignedUrl(path, 3600);
+  if (error) return null;
+  return data.signedUrl;
+}
+
 export async function fetchMyOrders(): Promise<OrderRow[]> {
   const { data, error } = await supabase
     .from("orders")

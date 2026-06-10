@@ -75,10 +75,13 @@ export type Database = {
           items: Json
           notes: string | null
           payment_method: string | null
+          payment_screenshot_path: string | null
+          payment_status: string
           shipping_address: string | null
           status: string
           subtotal: number
           total: number
+          transaction_id: string | null
           updated_at: string
           user_id: string | null
         }
@@ -91,10 +94,13 @@ export type Database = {
           items?: Json
           notes?: string | null
           payment_method?: string | null
+          payment_screenshot_path?: string | null
+          payment_status?: string
           shipping_address?: string | null
           status?: string
           subtotal?: number
           total?: number
+          transaction_id?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -107,10 +113,13 @@ export type Database = {
           items?: Json
           notes?: string | null
           payment_method?: string | null
+          payment_screenshot_path?: string | null
+          payment_status?: string
           shipping_address?: string | null
           status?: string
           subtotal?: number
           total?: number
+          transaction_id?: string | null
           updated_at?: string
           user_id?: string | null
         }
