@@ -48,6 +48,8 @@ function PaymentsPage() {
       status: paymentStatus(o.status),
       customer: o.customer_name,
       date: o.created_at,
+      txn: (o as { transaction_id?: string | null }).transaction_id ?? "—",
+      screenshot: (o as { payment_screenshot_path?: string | null }).payment_screenshot_path ?? null,
     })).filter((r) => r.id.includes(search.toLowerCase()) || r.customer?.toLowerCase().includes(search.toLowerCase())),
   [orders, search]);
 
