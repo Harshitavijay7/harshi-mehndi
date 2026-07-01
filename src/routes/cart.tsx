@@ -56,9 +56,8 @@ function Cart() {
 
   const discount = Math.round(subtotal * applied);
   const taxable = subtotal - discount;
-  const gst = Math.round(taxable * 0.18);
   const shipping = shippingFor(taxable);
-  const total = taxable + gst + shipping;
+  const total = taxable + shipping;
   const isOnlinePayment = method !== "COD";
 
   if (items.length === 0) {
