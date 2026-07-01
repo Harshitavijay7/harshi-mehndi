@@ -168,6 +168,12 @@ function Booking() {
         <Field label="Special Requirements">
           <Textarea value={form.requirements} onChange={(e) => set("requirements", e.target.value)} placeholder="Describe the design style you'd love (Arabic, royal, bridal...) and any special requests" rows={3} />
         </Field>
+        {!user && (
+          <p className="rounded-lg border border-border/70 bg-muted/30 p-3 text-sm text-muted-foreground">
+            Please <a href="/auth" className="font-medium text-primary underline">sign in</a> to submit a booking, or reach us directly on WhatsApp.
+          </p>
+        )}
+
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button type="submit" variant="hero" size="lg" className="w-full" disabled={submitting}>
