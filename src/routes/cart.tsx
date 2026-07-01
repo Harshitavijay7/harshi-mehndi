@@ -204,7 +204,7 @@ function Cart() {
           <dl className="mt-5 space-y-2.5 text-sm">
             <Row label="Subtotal" value={`₹${subtotal}`} />
             {discount > 0 && <Row label="Discount" value={`-₹${discount}`} accent />}
-            <Row label="GST (18%)" value={`₹${gst}`} />
+            
             <Row label="Shipping" value={shipping === 0 ? "FREE" : `₹${shipping}`} />
             <div className="border-t border-border pt-3">
               <Row label="Total" value={`₹${total}`} bold />
