@@ -4,7 +4,8 @@ import { Minus, Plus, ShoppingBag, Trash2, Upload, Loader2 } from "lucide-react"
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
-import { createOrder, uploadPaymentScreenshot } from "@/lib/db";
+import { uploadPaymentScreenshot } from "@/lib/db";
+import { placeOrder as placeOrderFn, validateCoupon } from "@/lib/orders.functions";
 import { brand, shippingFor, upiQrUrl, upiLink } from "@/data/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
