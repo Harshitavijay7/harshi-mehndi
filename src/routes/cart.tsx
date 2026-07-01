@@ -99,25 +99,17 @@ function Cart() {
       if (screenshot) {
         screenshotPath = await uploadPaymentScreenshot(screenshot, user.id);
       }
-      await createOrder({
-        user_id: user.id,
-        customer_name: user.user_metadata?.full_name ?? user.email ?? "Customer",
-        customer_email: user.email ?? null,
-        customer_phone: phone,
-        shipping_address: address,
-        items: items.map(({ product, qty }) => ({
-          slug: product.slug,
-          name: product.name,
-          price: product.discountPrice ?? product.price,
-          qty,
-        })),
-        subtotal,
-        total,
-        status: "pending",
-        payment_method: method,
-        payment_status: isOnlinePayment ? "submitted" : "cod",
-        transaction_id: txnId || null,
-        payment_screenshot_path: screenshotPath,
+      // The server recomputes all prices/totals from authoritative DB data.
+      await placeOrderFn({
+        data: {
+          items: items.map(({ product, qty }) => ({ slug: product.slug, qty })),
+          address,
+          phone,
+          payment_method: method,
+          coupon: coupon.trim() || null,
+          transaction_id: txnId || null,
+          payment_screenshot_path: screenshotPath,
+        },
       });
       clear();
       setOpen(false);
@@ -130,6 +122,7 @@ function Cart() {
       setPlacing(false);
     }
   }
+
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
