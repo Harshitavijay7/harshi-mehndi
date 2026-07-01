@@ -6,7 +6,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // Server-authoritative business rules (kept off the client bundle).
-const GST_RATE = 0.18;
+
 const SHIPPING_FLAT = 50;
 const SHIPPING_FREE_ABOVE = 800;
 
