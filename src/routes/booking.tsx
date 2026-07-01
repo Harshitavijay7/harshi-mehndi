@@ -72,6 +72,10 @@ function Booking() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
+          if (!user) {
+            toast.error("Please sign in to submit a booking.");
+            return;
+          }
           if (!slot) {
             toast.error("Please select a time slot");
             return;
@@ -79,7 +83,7 @@ function Booking() {
           setSubmitting(true);
           try {
             await createBooking({
-              user_id: user?.id ?? null,
+              user_id: user.id,
               full_name: form.full_name,
               phone: form.phone,
               email: form.email || null,
