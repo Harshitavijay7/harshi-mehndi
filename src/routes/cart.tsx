@@ -181,12 +181,20 @@ function Cart() {
             <Input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="Coupon code" />
             <Button
               variant="gold"
-              onClick={() => {
-                if (coupon.trim().toUpperCase() === "HENNA10") {
-                  setApplied(0.1);
-                  toast.success("Coupon applied — 10% off!");
-                } else {
-                  toast.error("Invalid coupon. Try HENNA10");
+              onClick={async () => {
+                const code = coupon.trim();
+                if (!code) return;
+                try {
+                  const res = await validateCoupon({ data: { code } });
+                  if (res.valid) {
+                    setApplied(res.rate);
+                    toast.success(`Coupon applied — ${Math.round(res.rate * 100)}% off!`);
+                  } else {
+                    setApplied(0);
+                    toast.error("Invalid coupon code.");
+                  }
+                } catch {
+                  toast.error("Couldn't validate coupon. Please try again.");
                 }
               }}
             >
