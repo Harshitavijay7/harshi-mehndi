@@ -4,7 +4,8 @@ import { Minus, Plus, ShoppingBag, Trash2, Upload, Loader2 } from "lucide-react"
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
-import { createOrder, uploadPaymentScreenshot } from "@/lib/db";
+import { uploadPaymentScreenshot } from "@/lib/db";
+import { placeOrder as placeOrderFn, validateCoupon } from "@/lib/orders.functions";
 import { brand, shippingFor, upiQrUrl, upiLink } from "@/data/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,25 +99,17 @@ function Cart() {
       if (screenshot) {
         screenshotPath = await uploadPaymentScreenshot(screenshot, user.id);
       }
-      await createOrder({
-        user_id: user.id,
-        customer_name: user.user_metadata?.full_name ?? user.email ?? "Customer",
-        customer_email: user.email ?? null,
-        customer_phone: phone,
-        shipping_address: address,
-        items: items.map(({ product, qty }) => ({
-          slug: product.slug,
-          name: product.name,
-          price: product.discountPrice ?? product.price,
-          qty,
-        })),
-        subtotal,
-        total,
-        status: "pending",
-        payment_method: method,
-        payment_status: isOnlinePayment ? "submitted" : "cod",
-        transaction_id: txnId || null,
-        payment_screenshot_path: screenshotPath,
+      // The server recomputes all prices/totals from authoritative DB data.
+      await placeOrderFn({
+        data: {
+          items: items.map(({ product, qty }) => ({ slug: product.slug, qty })),
+          address,
+          phone,
+          payment_method: method,
+          coupon: coupon.trim() || null,
+          transaction_id: txnId || null,
+          payment_screenshot_path: screenshotPath,
+        },
       });
       clear();
       setOpen(false);
@@ -129,6 +122,7 @@ function Cart() {
       setPlacing(false);
     }
   }
+
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -187,12 +181,20 @@ function Cart() {
             <Input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="Coupon code" />
             <Button
               variant="gold"
-              onClick={() => {
-                if (coupon.trim().toUpperCase() === "HENNA10") {
-                  setApplied(0.1);
-                  toast.success("Coupon applied — 10% off!");
-                } else {
-                  toast.error("Invalid coupon. Try HENNA10");
+              onClick={async () => {
+                const code = coupon.trim();
+                if (!code) return;
+                try {
+                  const res = await validateCoupon({ data: { code } });
+                  if (res.valid) {
+                    setApplied(res.rate);
+                    toast.success(`Coupon applied — ${Math.round(res.rate * 100)}% off!`);
+                  } else {
+                    setApplied(0);
+                    toast.error("Invalid coupon code.");
+                  }
+                } catch {
+                  toast.error("Couldn't validate coupon. Please try again.");
                 }
               }}
             >
