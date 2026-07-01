@@ -80,10 +80,9 @@ export const placeOrder = createServerFn({ method: "POST" })
     const couponRate = data.coupon ? COUPONS[data.coupon.trim().toUpperCase()] ?? 0 : 0;
     const discount = Math.round(subtotal * couponRate);
     const taxable = subtotal - discount;
-    const gst = Math.round(taxable * GST_RATE);
     const shipping =
       taxable <= 0 ? 0 : taxable >= SHIPPING_FREE_ABOVE ? 0 : SHIPPING_FLAT;
-    const total = taxable + gst + shipping;
+    const total = taxable + shipping;
 
     const isOnline = data.payment_method !== "COD";
 
