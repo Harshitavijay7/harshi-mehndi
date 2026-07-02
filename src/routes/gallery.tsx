@@ -32,15 +32,17 @@ export const Route = createFileRoute("/gallery")({
 type Item = { src: string; category: string; title: string };
 
 const items: Item[] = [
+  { src: realBridal, category: "Bridal", title: "Lotus Bridal Palms" },
+  { src: realRoyal, category: "Royal", title: "Royal Temple Full Arm" },
+  { src: realPeacock, category: "Bridal", title: "Peacock Bridal Detailing" },
+  { src: realElephant, category: "Royal", title: "Royal Elephant Cuff" },
+  { src: realFusion, category: "Festival", title: "Gold Fusion Palm" },
   { src: bridal, category: "Bridal", title: "Full Hand Bridal" },
   { src: royal, category: "Royal", title: "Royal Mandala Palms" },
   { src: arabic, category: "Arabic", title: "Modern Arabic Floral" },
   { src: traditional, category: "Traditional", title: "Traditional Palm Art" },
   { src: festival, category: "Festival", title: "Glitter Festival Design" },
   { src: engagement, category: "Engagement", title: "Engagement Floral" },
-  { src: bridal, category: "Bridal", title: "Intricate Bridal Paisley" },
-  { src: arabic, category: "Arabic", title: "Arabic Vine Trail" },
-  { src: royal, category: "Royal", title: "Royal Jaali Work" },
 ];
 
 const categories = ["All", "Bridal", "Arabic", "Royal", "Traditional", "Festival", "Engagement"];
