@@ -3,6 +3,11 @@ import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import realBridal from "@/assets/harshi-bridal-1.jpg";
+import realPeacock from "@/assets/harshi-peacock-1.jpg";
+import realRoyal from "@/assets/harshi-royal-1.jpg";
+import realElephant from "@/assets/harshi-elephant-1.jpg";
+import realFusion from "@/assets/harshi-fusion-1.jpg";
 import bridal from "@/assets/gallery-bridal.jpg";
 import arabic from "@/assets/gallery-arabic.jpg";
 import royal from "@/assets/gallery-royal.jpg";
@@ -17,7 +22,7 @@ export const Route = createFileRoute("/gallery")({
       { name: "description", content: "Browse our gallery of bridal, Arabic, royal, traditional, festival and engagement mehndi designs by HARSHI'S Mehndi Art." },
       { property: "og:title", content: "Mehndi Gallery — HARSHI'S Mehndi Art" },
       { property: "og:description", content: "Bridal, Arabic, royal and festival mehndi design gallery." },
-      { property: "og:image", content: bridal },
+      { property: "og:image", content: realBridal },
     ],
     links: [{ rel: "canonical", href: "https://harshi-mehndi-magic.lovable.app/gallery" }],
   }),
@@ -27,15 +32,17 @@ export const Route = createFileRoute("/gallery")({
 type Item = { src: string; category: string; title: string };
 
 const items: Item[] = [
+  { src: realBridal, category: "Bridal", title: "Lotus Bridal Palms" },
+  { src: realRoyal, category: "Royal", title: "Royal Temple Full Arm" },
+  { src: realPeacock, category: "Bridal", title: "Peacock Bridal Detailing" },
+  { src: realElephant, category: "Royal", title: "Royal Elephant Cuff" },
+  { src: realFusion, category: "Festival", title: "Gold Fusion Palm" },
   { src: bridal, category: "Bridal", title: "Full Hand Bridal" },
   { src: royal, category: "Royal", title: "Royal Mandala Palms" },
   { src: arabic, category: "Arabic", title: "Modern Arabic Floral" },
   { src: traditional, category: "Traditional", title: "Traditional Palm Art" },
   { src: festival, category: "Festival", title: "Glitter Festival Design" },
   { src: engagement, category: "Engagement", title: "Engagement Floral" },
-  { src: bridal, category: "Bridal", title: "Intricate Bridal Paisley" },
-  { src: arabic, category: "Arabic", title: "Arabic Vine Trail" },
-  { src: royal, category: "Royal", title: "Royal Jaali Work" },
 ];
 
 const categories = ["All", "Bridal", "Arabic", "Royal", "Traditional", "Festival", "Engagement"];
