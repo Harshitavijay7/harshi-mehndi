@@ -22,7 +22,7 @@ export const Route = createFileRoute("/gallery")({
       { name: "description", content: "Browse our gallery of bridal, Arabic, royal, traditional, festival and engagement mehndi designs by HARSHI'S Mehndi Art." },
       { property: "og:title", content: "Mehndi Gallery — HARSHI'S Mehndi Art" },
       { property: "og:description", content: "Bridal, Arabic, royal and festival mehndi design gallery." },
-      { property: "og:image", content: bridal },
+      { property: "og:image", content: realBridal },
     ],
     links: [{ rel: "canonical", href: "https://harshi-mehndi-magic.lovable.app/gallery" }],
   }),
