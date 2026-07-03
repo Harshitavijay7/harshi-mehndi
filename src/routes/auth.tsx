@@ -40,10 +40,17 @@ function AuthPage() {
         toast.success("Welcome back!");
         router.navigate({ to: "/" });
       }
-    } else {
+    } else if (mode === "signup") {
       const { error } = await signUp(email, password, fullName);
       if (error) toast.error(error);
-      else toast.success("Account created! Please check your email to confirm, then sign in.");
+      else {
+        toast.success("Account created! You're all set.");
+        router.navigate({ to: "/" });
+      }
+    } else {
+      const { error } = await resetPassword(email);
+      if (error) toast.error(error);
+      else toast.success("Password reset link sent — check your email.");
     }
     setBusy(false);
   };
