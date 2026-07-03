@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        // No email verification — users are signed in immediately.
         data: { full_name: fullName },
       },
     });
@@ -90,8 +90,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false);
   };
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error?.message ?? null };
+  };
+
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: error?.message ?? null };
+  };
+
   const value = useMemo(
-    () => ({ user, session, isAdmin, loading, signIn, signUp, signOut }),
+    () => ({
+      user,
+      session,
+      isAdmin,
+      loading,
+      signIn,
+      signUp,
+      signOut,
+      resetPassword,
+      updatePassword,
+    }),
     [user, session, isAdmin, loading],
   );
 
