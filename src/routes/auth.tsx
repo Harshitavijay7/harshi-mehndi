@@ -55,14 +55,21 @@ function AuthPage() {
     setBusy(false);
   };
 
+  const title =
+    mode === "login" ? "Welcome Back" : mode === "signup" ? "Create Account" : "Reset Password";
+  const subtitle =
+    mode === "login"
+      ? "Sign in to your HARSHI'S account."
+      : mode === "signup"
+      ? "Join HARSHI'S Mehndi Art."
+      : "Enter your email and we'll send a reset link.";
+
   return (
     <div className="mx-auto max-w-md px-4 py-16 sm:px-6">
       <div className="text-center">
         <Sparkles className="mx-auto size-10 text-gold" />
-        <h1 className="mt-3 text-3xl font-bold">{mode === "login" ? "Welcome Back" : "Create Account"}</h1>
-        <p className="mt-2 text-muted-foreground">
-          {mode === "login" ? "Sign in to your HARSHI'S account." : "Join HARSHI'S Mehndi Art."}
-        </p>
+        <h1 className="mt-3 text-3xl font-bold">{title}</h1>
+        <p className="mt-2 text-muted-foreground">{subtitle}</p>
       </div>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5 rounded-2xl border border-border/70 bg-card p-6 shadow-soft sm:p-8">
@@ -76,23 +83,48 @@ function AuthPage() {
           <Label className="mb-1.5 block">Email</Label>
           <Input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" />
         </div>
-        <div>
-          <Label className="mb-1.5 block">Password</Label>
-          <Input required type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-        </div>
+        {mode !== "forgot" && (
+          <div>
+            <Label className="mb-1.5 block">Password</Label>
+            <Input required type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+          </div>
+        )}
+        {mode === "login" && (
+          <button
+            type="button"
+            onClick={() => setMode("forgot")}
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Forgot password?
+          </button>
+        )}
         <Button type="submit" variant="hero" size="lg" className="w-full" disabled={busy}>
-          {busy ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
+          {busy
+            ? "Please wait..."
+            : mode === "login"
+            ? "Sign In"
+            : mode === "signup"
+            ? "Create Account"
+            : "Send Reset Link"}
         </Button>
       </form>
 
       <p className="mt-5 text-center text-sm text-muted-foreground">
-        {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
-        <button
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="font-medium text-primary hover:underline"
-        >
-          {mode === "login" ? "Sign up" : "Sign in"}
-        </button>
+        {mode === "forgot" ? (
+          <button onClick={() => setMode("login")} className="font-medium text-primary hover:underline">
+            Back to sign in
+          </button>
+        ) : (
+          <>
+            {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
+            <button
+              onClick={() => setMode(mode === "login" ? "signup" : "login")}
+              className="font-medium text-primary hover:underline"
+            >
+              {mode === "login" ? "Sign up" : "Sign in"}
+            </button>
+          </>
+        )}
       </p>
     </div>
   );
