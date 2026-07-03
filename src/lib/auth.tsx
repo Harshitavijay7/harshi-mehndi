@@ -21,6 +21,8 @@ type AuthContextType = {
     fullName: string,
   ) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (password: string) => Promise<{ error: string | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
