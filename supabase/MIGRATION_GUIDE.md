@@ -25,16 +25,29 @@ With "Confirm email" off, users sign up and are logged in instantly — no
 verification email, no callback page needed.
 
 ## 3. Point the app at your project (self-host / eject only)
-Set these environment variables (never commit real secrets):
+Set these environment variables in your host (never commit real secrets).
+These are the values for **your** project:
 ```
-VITE_SUPABASE_URL=https://<your-ref>.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=<your anon/publishable key>
-# server-only (never exposed to the browser):
-SUPABASE_SERVICE_ROLE_KEY=<your service_role key>
+VITE_SUPABASE_URL=https://yutrtmnjobqhpkfrfwnm.supabase.co
+VITE_SUPABASE_PROJECT_ID=yutrtmnjobqhpkfrfwnm
+# Publishable key you provided (new sb_publishable_ format):
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_feZlL6eJ6sy9zMI5jBuE_Q_5d6pSucJ
+
+# server-only (never exposed to the browser) — mirror the same values:
+SUPABASE_URL=https://yutrtmnjobqhpkfrfwnm.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_feZlL6eJ6sy9zMI5jBuE_Q_5d6pSucJ
+SUPABASE_SERVICE_ROLE_KEY=<your service_role key from the new project>
 ```
 The frontend only ever uses the **publishable/anon** key. The `service_role`
 key is read only inside server code (`client.server.ts`) and is never bundled
 into the browser.
+
+> **Key-format note:** the key you gave is a new `sb_publishable_*` key. The
+> browser client works with it, but server Data API reads (PostgREST) can fail
+> with `Expected 3 parts in JWT; got 1` on some setups. If you hit that, grab
+> the legacy **JWT-format anon key** (`eyJ...`) from your new project's API
+> settings and use that for `VITE_SUPABASE_PUBLISHABLE_KEY` /
+> `SUPABASE_PUBLISHABLE_KEY` instead — both formats are valid publishable keys.
 
 ## 4. Make yourself admin
 1. Sign up in the app with your admin email.
