@@ -90,15 +90,20 @@ export const placeOrder = createServerFn({ method: "POST" })
       .from("orders")
       .insert({
         user_id: userId,
-        customer_name:
-          (claims?.user_metadata as { full_name?: string } | undefined)?.full_name ??
-          (claims?.email as string | undefined) ??
-          "Customer",
-        customer_email: (claims?.email as string | undefined) ?? null,
-        customer_phone: data.phone,
-        shipping_address: data.address,
+
+full_name:
+  (claims?.user_metadata as { full_name?: string } | undefined)?.full_name ??
+  (claims?.email as string | undefined) ??
+  "Customer",
+
+email: (claims?.email as string | undefined) ?? null,
+
+phone: data.phone,
+
+address: data.address,
         items: lineItems,
         subtotal,
+        shipping,
         total,
         status: "pending",
         payment_method: data.payment_method,
@@ -108,7 +113,10 @@ export const placeOrder = createServerFn({ method: "POST" })
       })
       .select("id, total")
       .single();
-    if (error) throw new Error("Could not place order.");
+    if (error) {
+  console.error(error);
+  throw new Error(JSON.stringify(error));
+}
 
     return { id: order.id, total: order.total };
   });
