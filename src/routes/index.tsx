@@ -51,6 +51,7 @@ function Home() {
 
   return (
     <div>
+      <PromoBanner />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <img
