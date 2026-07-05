@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ProductCard";
 import { products, homeCategories, testimonials } from "@/data/catalog";
 import { brand, telLink, whatsappLink } from "@/data/brand";
+import { PromoBanner } from "@/components/PromoBanner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,6 +51,7 @@ function Home() {
 
   return (
     <div>
+      <PromoBanner />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <img
