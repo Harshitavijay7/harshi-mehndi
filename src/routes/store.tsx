@@ -8,6 +8,7 @@ import { fetchProducts } from "@/lib/db";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { PromoBanner } from "@/components/PromoBanner";
 
 export const Route = createFileRoute("/store")({
   head: () => ({
