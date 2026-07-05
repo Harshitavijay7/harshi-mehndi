@@ -91,27 +91,19 @@ console.log("CLAIMS:", claims);
     const { data: order, error } = await supabase
       .from("orders")
       .insert({
-        user_id: userId,
-
-full_name:
-  (claims?.user_metadata as { full_name?: string } | undefined)?.full_name ??
-  (claims?.email as string | undefined) ??
-  "Customer",
-
-email: (claims?.email as string | undefined) ?? null,
-
-phone: data.phone,
-
-address: data.address,
-        items: lineItems,
-        subtotal,
-        shipping,
-        total,
-        status: "pending",
-        payment_method: data.payment_method,
-        payment_status: isOnline ? "submitted" : "cod",
-        transaction_id: data.transaction_id || null,
-        payment_screenshot_path: data.payment_screenshot_path || null,
+       .insert({
+  user_id: userId,
+  full_name: "Test User",
+  phone: "9999999999",
+  address: "Test Address",
+  items: [],
+  subtotal: 100,
+  shipping: 50,
+  total: 150,
+  status: "pending",
+  payment_method: "COD",
+  payment_status: "cod"
+})
       })
       .select("id, total")
       .single();
