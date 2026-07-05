@@ -55,9 +55,12 @@ function Store() {
   }, [cat, query, sort, products]);
 
   return (
+    <div>
+      <PromoBanner className="rounded-2xl" />
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <div className="text-center">
-        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">Online Store</span>
+        <span className="sr-only">Online Store</span>
+
         <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Mehndi Products & Supplies</h1>
         <p className="mt-3 text-muted-foreground">Premium, 100% natural — for artists, brides & festivals.</p>
         <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
