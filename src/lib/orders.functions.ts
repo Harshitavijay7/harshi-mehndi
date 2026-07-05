@@ -51,6 +51,8 @@ export const placeOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => orderInput.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
+    console.log("USER ID:", userId);
+console.log("CLAIMS:", claims);
 
     const slugs = data.items.map((i) => i.slug);
     const { data: products, error: prodErr } = await supabase
