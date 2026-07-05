@@ -156,5 +156,6 @@ function Store() {
         </Button>
       </div>
     </div>
+    </div>
   );
 }
