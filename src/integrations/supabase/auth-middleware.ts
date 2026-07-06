@@ -74,12 +74,25 @@ export const requireSupabaseAuth = createMiddleware({
     }
   );
 
-  const { data, error } =
-    await supabase.auth.getClaims(token);
+  const { data, error } = await supabase.auth.getClaims(token);
 
-  if (error) {
-    console.error("AUTH ERROR:", error);
-    throw new Error(JSON.stringify(error));
+console.log("AUTH DATA:", data);
+console.error("AUTH ERROR:", error);
+
+if (error) {
+  throw new Error(
+    "AUTH ERROR: " + JSON.stringify(error)
+  );
+}
+
+if (!data?.claims) {
+  throw new Error(
+    "NO CLAIMS: " + JSON.stringify(data)
+  );
+}
+
+console.log("USER ID:", data.claims.sub);
+console.log("CLAIMS:", data.claims);
   }
 
   if (!data?.claims?.sub) {
