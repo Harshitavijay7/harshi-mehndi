@@ -93,7 +93,7 @@ if (!data?.claims) {
 
 console.log("USER ID:", data.claims.sub);
 console.log("CLAIMS:", data.claims);
-  }
+  
 
   if (!data?.claims?.sub) {
     throw new Error(
