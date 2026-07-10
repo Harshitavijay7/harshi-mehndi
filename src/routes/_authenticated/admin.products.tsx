@@ -319,8 +319,30 @@ function ProductDialog({
           </div>
           <div><Label className="mb-1.5 block">Size</Label><Input value={form.size} onChange={(e) => set("size", e.target.value)} /></div>
           <div><Label className="mb-1.5 block">Price (₹)</Label><Input type="number" required value={form.price} onChange={(e) => set("price", e.target.value)} /></div>
+          <div><Label className="mb-1.5 block">Discount Price (₹)</Label><Input type="number" value={form.discount_price} onChange={(e) => set("discount_price", e.target.value)} /></div>
           <div><Label className="mb-1.5 block">Stock</Label><Input type="number" value={form.stock} onChange={(e) => set("stock", e.target.value)} /></div>
-          <div className="sm:col-span-2"><Label className="mb-1.5 block">Image key (e.g. cones.jpg)</Label><Input value={form.image_key} onChange={(e) => set("image_key", e.target.value)} /></div>
+          <div><Label className="mb-1.5 block">Badge (e.g. New)</Label><Input value={form.badge} onChange={(e) => set("badge", e.target.value)} /></div>
+          <div className="sm:col-span-2 flex items-center gap-6 rounded-xl border border-border bg-muted/30 p-3">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Switch checked={featured} onCheckedChange={setFeatured} /> Featured
+            </label>
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Switch checked={bestSeller} onCheckedChange={setBestSeller} /> Best Seller
+            </label>
+          </div>
+          <div className="sm:col-span-2">
+            <Label className="mb-1.5 block">Product Image</Label>
+            <div className="flex items-center gap-3">
+              <img src={resolveProductImage(form.image_key)} alt="preview" className="size-16 rounded-lg object-cover border border-border" />
+              <div className="flex-1">
+                <Input type="file" accept="image/*" disabled={uploading} onChange={(e) => onUpload(e.target.files?.[0])} />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {uploading ? "Uploading..." : "Upload a file, or enter an image key/URL below."}
+                </p>
+              </div>
+            </div>
+            <Input className="mt-2" placeholder="cones.jpg or https://..." value={form.image_key} onChange={(e) => set("image_key", e.target.value)} />
+          </div>
           <div className="sm:col-span-2"><Label className="mb-1.5 block">Description</Label><Textarea rows={3} value={form.description} onChange={(e) => set("description", e.target.value)} /></div>
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
