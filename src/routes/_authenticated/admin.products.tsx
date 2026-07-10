@@ -150,7 +150,16 @@ function ProductsPage() {
                     </td>
                     <td className="p-3 font-medium">{p.name}</td>
                     <td className="p-3 text-muted-foreground">{p.category}</td>
-                    <td className="p-3">{formatINR(p.price)}</td>
+                    <td className="p-3">
+                      {p.discount_price != null ? (
+                        <div className="flex flex-col leading-tight">
+                          <span className="font-semibold text-emerald-600">{formatINR(p.discount_price)}</span>
+                          <span className="text-xs text-muted-foreground line-through">{formatINR(p.price)}</span>
+                        </div>
+                      ) : (
+                        formatINR(p.price)
+                      )}
+                    </td>
                     <td className="p-3">{p.stock}</td>
                     <td className="p-3">
                       <span className={cn(
@@ -161,6 +170,32 @@ function ProductsPage() {
                       )}>
                         {p.in_stock && p.stock > 0 ? "In Stock" : "Out of Stock"}
                       </span>
+                    </td>
+                    <td className="p-3">
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          title="Toggle Featured"
+                          onClick={() => toggle.mutate({ id: p.id, patch: { featured: !p.featured } })}
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-xs font-semibold transition",
+                            p.featured ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground",
+                          )}
+                        >
+                          Featured
+                        </button>
+                        <button
+                          type="button"
+                          title="Toggle Best Seller"
+                          onClick={() => toggle.mutate({ id: p.id, patch: { best_seller: !p.best_seller } })}
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-xs font-semibold transition",
+                            p.best_seller ? "bg-gold/25 text-gold-foreground" : "bg-muted text-muted-foreground",
+                          )}
+                        >
+                          Best
+                        </button>
+                      </div>
                     </td>
                     <td className="p-3">
                       <div className="flex justify-end gap-1">
@@ -175,7 +210,7 @@ function ProductsPage() {
                   </tr>
                 ))}
             {!isLoading && filtered.length === 0 && (
-              <tr><td colSpan={7} className="p-10 text-center text-muted-foreground">No products found.</td></tr>
+              <tr><td colSpan={8} className="p-10 text-center text-muted-foreground">No products found.</td></tr>
             )}
           </tbody>
         </table>
