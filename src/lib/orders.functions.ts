@@ -165,6 +165,8 @@ export const placeOrder = createServerFn({
 
         total,
 
+        notes: `Shipping: ₹${shipping}${discount ? ` | Discount: ₹${discount}` : ""}`,
+
         status: "pending",
 
         payment_method: data.payment_method,
