@@ -22,12 +22,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import {
   fetchProductsAdmin,
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
   type ProductRow,
 } from "@/lib/db";
 import { resolveProductImage } from "@/lib/productImages";
@@ -67,6 +69,12 @@ function ProductsPage() {
     mutationFn: (id: string) => deleteProduct(id),
     onSuccess: () => { toast.success("Product deleted"); refresh(); },
     onError: () => toast.error("Delete failed (admin only)"),
+  });
+
+  const toggle = useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Partial<ProductRow> }) => updateProduct(id, patch),
+    onSuccess: () => refresh(),
+    onError: () => toast.error("Update failed (admin only)"),
   });
 
   const categories = useMemo(() => {
@@ -126,6 +134,7 @@ function ProductsPage() {
               <th className="p-3">Price</th>
               <th className="p-3">Stock</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Flags</th>
               <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -143,7 +152,16 @@ function ProductsPage() {
                     </td>
                     <td className="p-3 font-medium">{p.name}</td>
                     <td className="p-3 text-muted-foreground">{p.category}</td>
-                    <td className="p-3">{formatINR(p.price)}</td>
+                    <td className="p-3">
+                      {p.discount_price != null ? (
+                        <div className="flex flex-col leading-tight">
+                          <span className="font-semibold text-emerald-600">{formatINR(p.discount_price)}</span>
+                          <span className="text-xs text-muted-foreground line-through">{formatINR(p.price)}</span>
+                        </div>
+                      ) : (
+                        formatINR(p.price)
+                      )}
+                    </td>
                     <td className="p-3">{p.stock}</td>
                     <td className="p-3">
                       <span className={cn(
@@ -154,6 +172,32 @@ function ProductsPage() {
                       )}>
                         {p.in_stock && p.stock > 0 ? "In Stock" : "Out of Stock"}
                       </span>
+                    </td>
+                    <td className="p-3">
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          title="Toggle Featured"
+                          onClick={() => toggle.mutate({ id: p.id, patch: { featured: !p.featured } })}
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-xs font-semibold transition",
+                            p.featured ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground",
+                          )}
+                        >
+                          Featured
+                        </button>
+                        <button
+                          type="button"
+                          title="Toggle Best Seller"
+                          onClick={() => toggle.mutate({ id: p.id, patch: { best_seller: !p.best_seller } })}
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-xs font-semibold transition",
+                            p.best_seller ? "bg-gold/25 text-gold-foreground" : "bg-muted text-muted-foreground",
+                          )}
+                        >
+                          Best
+                        </button>
+                      </div>
                     </td>
                     <td className="p-3">
                       <div className="flex justify-end gap-1">
@@ -168,7 +212,7 @@ function ProductsPage() {
                   </tr>
                 ))}
             {!isLoading && filtered.length === 0 && (
-              <tr><td colSpan={7} className="p-10 text-center text-muted-foreground">No products found.</td></tr>
+              <tr><td colSpan={8} className="p-10 text-center text-muted-foreground">No products found.</td></tr>
             )}
           </tbody>
         </table>
@@ -201,13 +245,33 @@ function ProductDialog({
     slug: product?.slug ?? "",
     category: product?.category ?? "Mehndi Powder",
     price: String(product?.price ?? ""),
+    discount_price: product?.discount_price != null ? String(product.discount_price) : "",
     stock: String(product?.stock ?? ""),
     size: product?.size ?? "",
     image_key: product?.image_key ?? "",
+    badge: product?.badge ?? "",
     description: product?.description ?? "",
   });
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const [featured, setFeatured] = useState(product?.featured ?? false);
+  const [bestSeller, setBestSeller] = useState(product?.best_seller ?? false);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const onUpload = async (file: File | undefined) => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadProductImage(file);
+      set("image_key", url);
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error("Image upload failed (admin only)");
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -218,10 +282,14 @@ function ProductDialog({
         slug: form.slug || form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         category: form.category,
         price: Number(form.price) || 0,
+        discount_price: form.discount_price ? Number(form.discount_price) : null,
         stock: Number(form.stock) || 0,
         size: form.size || null,
         image_key: form.image_key || null,
+        badge: form.badge || null,
         description: form.description,
+        featured,
+        best_seller: bestSeller,
         in_stock: (Number(form.stock) || 0) > 0,
       };
       if (product) await updateProduct(product.id, payload);
@@ -252,8 +320,30 @@ function ProductDialog({
           </div>
           <div><Label className="mb-1.5 block">Size</Label><Input value={form.size} onChange={(e) => set("size", e.target.value)} /></div>
           <div><Label className="mb-1.5 block">Price (₹)</Label><Input type="number" required value={form.price} onChange={(e) => set("price", e.target.value)} /></div>
+          <div><Label className="mb-1.5 block">Discount Price (₹)</Label><Input type="number" value={form.discount_price} onChange={(e) => set("discount_price", e.target.value)} /></div>
           <div><Label className="mb-1.5 block">Stock</Label><Input type="number" value={form.stock} onChange={(e) => set("stock", e.target.value)} /></div>
-          <div className="sm:col-span-2"><Label className="mb-1.5 block">Image key (e.g. cones.jpg)</Label><Input value={form.image_key} onChange={(e) => set("image_key", e.target.value)} /></div>
+          <div><Label className="mb-1.5 block">Badge (e.g. New)</Label><Input value={form.badge} onChange={(e) => set("badge", e.target.value)} /></div>
+          <div className="sm:col-span-2 flex items-center gap-6 rounded-xl border border-border bg-muted/30 p-3">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Switch checked={featured} onCheckedChange={setFeatured} /> Featured
+            </label>
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Switch checked={bestSeller} onCheckedChange={setBestSeller} /> Best Seller
+            </label>
+          </div>
+          <div className="sm:col-span-2">
+            <Label className="mb-1.5 block">Product Image</Label>
+            <div className="flex items-center gap-3">
+              <img src={resolveProductImage(form.image_key)} alt="preview" className="size-16 rounded-lg object-cover border border-border" />
+              <div className="flex-1">
+                <Input type="file" accept="image/*" disabled={uploading} onChange={(e) => onUpload(e.target.files?.[0])} />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {uploading ? "Uploading..." : "Upload a file, or enter an image key/URL below."}
+                </p>
+              </div>
+            </div>
+            <Input className="mt-2" placeholder="cones.jpg or https://..." value={form.image_key} onChange={(e) => set("image_key", e.target.value)} />
+          </div>
           <div className="sm:col-span-2"><Label className="mb-1.5 block">Description</Label><Textarea rows={3} value={form.description} onChange={(e) => set("description", e.target.value)} /></div>
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>

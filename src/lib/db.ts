@@ -157,3 +157,36 @@ export async function fetchCustomers(): Promise<ProfileRow[]> {
   if (error) throw error;
   return data ?? [];
 }
+
+/** Orders + bookings history for a single customer (admin use). */
+export async function fetchCustomerHistory(userId: string, email: string | null) {
+  const orders = (await fetchAllOrders()).filter(
+    (o) => o.user_id === userId || (!!email && o.customer_email === email),
+  );
+  const bookings = (await fetchAllBookings()).filter(
+    (b) => b.user_id === userId || (!!email && b.email === email),
+  );
+  return { orders, bookings };
+}
+
+/**
+ * Upload a product image to the existing private `products` bucket and return a
+ * long-lived signed URL. Stored directly in products.image_key so it renders
+ * everywhere via resolveProductImage (which returns http(s) URLs as-is).
+ */
+export async function uploadProductImage(file: File): Promise<string> {
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `catalog/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const { error } = await supabase.storage.from("products").upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) throw error;
+  // 10 year signed URL so images keep rendering without a public bucket.
+  const { data, error: signErr } = await supabase.storage
+    .from("products")
+    .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+  if (signErr || !data) throw signErr ?? new Error("Could not sign image URL");
+  return data.signedUrl;
+}
+

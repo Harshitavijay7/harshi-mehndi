@@ -18,6 +18,7 @@ import {
   Loader2,
   ShieldAlert,
   Sparkles,
+  Tag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ const NAV = [
   { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { to: "/admin/bookings", label: "Bookings", icon: CalendarDays },
   { to: "/admin/customers", label: "Customers", icon: Users },
+  { to: "/admin/coupons", label: "Coupons", icon: Tag },
   { to: "/admin/payments", label: "Payments", icon: CreditCard },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/admin/settings", label: "Settings", icon: Settings },
