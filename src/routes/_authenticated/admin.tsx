@@ -18,6 +18,7 @@ import {
   Loader2,
   ShieldAlert,
   Sparkles,
+  Tag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
