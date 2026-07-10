@@ -1,9 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Moon, Sun, User, Mail, Shield } from "lucide-react";
+import { Moon, Sun, User, Mail, Shield, Store, Truck } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/auth";
+import {
+  getStoreSettings,
+  saveStoreSettings,
+  type StoreSettings,
+} from "@/lib/adminStore";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: SettingsPage,
@@ -12,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/admin/settings")({
 function SettingsPage() {
   const { user } = useAuth();
   const [dark, setDark] = useState(false);
+  const [settings, setSettings] = useState<StoreSettings>(() => getStoreSettings());
 
   useEffect(() => {
     setDark(document.documentElement.classList.contains("dark"));
@@ -23,8 +32,67 @@ function SettingsPage() {
     localStorage.setItem("admin-theme", v ? "dark" : "light");
   };
 
+  const set = (k: keyof StoreSettings, v: string | number) =>
+    setSettings((s) => ({ ...s, [k]: v }));
+
+  const saveSettings = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveStoreSettings(settings);
+    toast.success("Store settings saved");
+  };
+
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-3xl space-y-6">
+      <form onSubmit={saveSettings} className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+        <h2 className="mb-4 flex items-center gap-2 font-serif text-lg font-bold">
+          <Store className="size-5 text-primary" /> Store Information
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Label className="mb-1.5 block">Store Name</Label>
+            <Input value={settings.storeName} onChange={(e) => set("storeName", e.target.value)} />
+          </div>
+          <div className="sm:col-span-2">
+            <Label className="mb-1.5 block">Tagline</Label>
+            <Input value={settings.tagline} onChange={(e) => set("tagline", e.target.value)} />
+          </div>
+          <div>
+            <Label className="mb-1.5 block">Support Email</Label>
+            <Input type="email" value={settings.supportEmail} onChange={(e) => set("supportEmail", e.target.value)} />
+          </div>
+          <div>
+            <Label className="mb-1.5 block">Support Phone</Label>
+            <Input value={settings.supportPhone} onChange={(e) => set("supportPhone", e.target.value)} />
+          </div>
+          <div>
+            <Label className="mb-1.5 block">WhatsApp Number</Label>
+            <Input value={settings.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} />
+          </div>
+          <div>
+            <Label className="mb-1.5 block">Store Address</Label>
+            <Input value={settings.address} onChange={(e) => set("address", e.target.value)} />
+          </div>
+        </div>
+
+        <h2 className="mb-4 mt-8 flex items-center gap-2 font-serif text-lg font-bold">
+          <Truck className="size-5 text-primary" /> Shipping
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label className="mb-1.5 block">Shipping Charge (₹)</Label>
+            <Input type="number" value={settings.shippingCharge} onChange={(e) => set("shippingCharge", Number(e.target.value) || 0)} />
+          </div>
+          <div>
+            <Label className="mb-1.5 block">Free Shipping Above (₹)</Label>
+            <Input type="number" value={settings.freeShippingAbove} onChange={(e) => set("freeShippingAbove", Number(e.target.value) || 0)} />
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-end">
+          <Button type="submit" variant="hero">Save Settings</Button>
+        </div>
+      </form>
+
       <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
         <h2 className="mb-4 font-serif text-lg font-bold">Admin Profile</h2>
         <div className="space-y-3 text-sm">
@@ -58,14 +126,6 @@ function SettingsPage() {
           </div>
           <Switch checked={dark} onCheckedChange={toggleDark} />
         </div>
-      </div>
-
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-        <h2 className="mb-2 font-serif text-lg font-bold">Store</h2>
-        <p className="text-sm text-muted-foreground">HARSHI'S Mehndi Art — premium henna products & artistry.</p>
-        <Button asChild variant="outline" className="mt-4">
-          <a href="/" target="_blank" rel="noreferrer">View storefront</a>
-        </Button>
       </div>
     </div>
   );
