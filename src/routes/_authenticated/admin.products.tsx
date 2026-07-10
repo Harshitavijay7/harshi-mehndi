@@ -69,6 +69,12 @@ function ProductsPage() {
     onError: () => toast.error("Delete failed (admin only)"),
   });
 
+  const toggle = useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Partial<ProductRow> }) => updateProduct(id, patch),
+    onSuccess: () => refresh(),
+    onError: () => toast.error("Update failed (admin only)"),
+  });
+
   const categories = useMemo(() => {
     const set = new Set<string>(CATEGORIES);
     products.forEach((p) => set.add(p.category));
