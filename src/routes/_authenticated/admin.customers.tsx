@@ -1,12 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Download } from "lucide-react";
+import { Search, Download, Eye, Mail, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchCustomers, fetchAllOrders } from "@/lib/db";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { fetchCustomers, fetchAllOrders, fetchCustomerHistory, type ProfileRow } from "@/lib/db";
 import { formatINR, exportToCsv } from "@/lib/adminUtils";
+import { StatusBadge } from "@/components/admin/StatusBadge";
 
 export const Route = createFileRoute("/_authenticated/admin/customers")({
   component: CustomersPage,
