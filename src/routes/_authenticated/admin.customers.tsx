@@ -23,6 +23,7 @@ function CustomersPage() {
   const { data: customers = [], isLoading } = useQuery({ queryKey: ["admin-customers"], queryFn: fetchCustomers });
   const { data: orders = [] } = useQuery({ queryKey: ["admin-orders"], queryFn: fetchAllOrders });
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<ProfileRow | null>(null);
 
   const rows = useMemo(() => {
     return customers.map((c) => {
