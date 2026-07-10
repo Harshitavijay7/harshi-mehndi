@@ -38,5 +38,9 @@ const map: Record<string, string> = {
   "stocking-set.jpg": stockingSet,
 };
 
-export const resolveProductImage = (key?: string | null): string =>
-  (key && map[key]) || mehndiPowder;
+export const resolveProductImage = (key?: string | null): string => {
+  if (!key) return mehndiPowder;
+  // Uploaded images are stored as full URLs (signed/public storage links).
+  if (/^https?:\/\//i.test(key) || key.startsWith("data:")) return key;
+  return map[key] || mehndiPowder;
+};
