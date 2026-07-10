@@ -28,6 +28,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
   type ProductRow,
 } from "@/lib/db";
 import { resolveProductImage } from "@/lib/productImages";
