@@ -243,13 +243,33 @@ function ProductDialog({
     slug: product?.slug ?? "",
     category: product?.category ?? "Mehndi Powder",
     price: String(product?.price ?? ""),
+    discount_price: product?.discount_price != null ? String(product.discount_price) : "",
     stock: String(product?.stock ?? ""),
     size: product?.size ?? "",
     image_key: product?.image_key ?? "",
+    badge: product?.badge ?? "",
     description: product?.description ?? "",
   });
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const [featured, setFeatured] = useState(product?.featured ?? false);
+  const [bestSeller, setBestSeller] = useState(product?.best_seller ?? false);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const onUpload = async (file: File | undefined) => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadProductImage(file);
+      set("image_key", url);
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error("Image upload failed (admin only)");
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -260,10 +280,14 @@ function ProductDialog({
         slug: form.slug || form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         category: form.category,
         price: Number(form.price) || 0,
+        discount_price: form.discount_price ? Number(form.discount_price) : null,
         stock: Number(form.stock) || 0,
         size: form.size || null,
         image_key: form.image_key || null,
+        badge: form.badge || null,
         description: form.description,
+        featured,
+        best_seller: bestSeller,
         in_stock: (Number(form.stock) || 0) > 0,
       };
       if (product) await updateProduct(product.id, payload);
