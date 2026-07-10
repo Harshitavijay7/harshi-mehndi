@@ -60,6 +60,7 @@ function CustomersPage() {
               <th className="p-3">Total Orders</th>
               <th className="p-3">Total Spent</th>
               <th className="p-3">Joined</th>
+              <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
