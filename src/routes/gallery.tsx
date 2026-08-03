@@ -8,12 +8,10 @@ import realPeacock from "@/assets/harshi-new-2.jpg";
 import realRoyal from "@/assets/harshi-new-3.jpg";
 import realElephant from "@/assets/harshi-new-4.jpg";
 import realFusion from "@/assets/harshi-new-5.jpg";
-import bridal from "@/assets/gallery-bridal.jpg";
-import arabic from "@/assets/gallery-arabic.jpg";
-import royal from "@/assets/gallery-royal.jpg";
-import traditional from "@/assets/gallery-traditional.jpg";
-import festival from "@/assets/gallery-festival.jpg";
-import engagement from "@/assets/gallery-engagement.jpg";
+import realLotus from "@/assets/harshi-new-6.jpg";
+import realArabicHand from "@/assets/harshi-new-7.jpg";
+import realFullArm from "@/assets/harshi-new-8.jpg";
+import realPeacockPalms from "@/assets/harshi-new-9.jpg";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
