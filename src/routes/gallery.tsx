@@ -3,11 +3,11 @@ import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import realBridal from "@/assets/harshi-bridal-1.jpg";
-import realPeacock from "@/assets/harshi-peacock-1.jpg";
-import realRoyal from "@/assets/harshi-royal-1.jpg";
-import realElephant from "@/assets/harshi-elephant-1.jpg";
-import realFusion from "@/assets/harshi-fusion-1.jpg";
+import realBridal from "@/assets/harshi-new-1.jpg";
+import realPeacock from "@/assets/harshi-new-2.jpg";
+import realRoyal from "@/assets/harshi-new-3.jpg";
+import realElephant from "@/assets/harshi-new-4.jpg";
+import realFusion from "@/assets/harshi-new-5.jpg";
 import bridal from "@/assets/gallery-bridal.jpg";
 import arabic from "@/assets/gallery-arabic.jpg";
 import royal from "@/assets/gallery-royal.jpg";
@@ -32,11 +32,11 @@ export const Route = createFileRoute("/gallery")({
 type Item = { src: string; category: string; title: string };
 
 const items: Item[] = [
-  { src: realBridal, category: "Bridal", title: "Lotus Bridal Palms" },
-  { src: realRoyal, category: "Royal", title: "Royal Temple Full Arm" },
-  { src: realPeacock, category: "Bridal", title: "Peacock Bridal Detailing" },
-  { src: realElephant, category: "Royal", title: "Royal Elephant Cuff" },
-  { src: realFusion, category: "Festival", title: "Gold Fusion Palm" },
+  { src: realBridal, category: "Bridal", title: "Floral Cascade Palm" },
+  { src: realPeacock, category: "Bridal", title: "Mom & Dad To Be" },
+  { src: realRoyal, category: "Traditional", title: "Lotus Arch Hand" },
+  { src: realElephant, category: "Royal", title: "Gold Lotus Frame" },
+  { src: realFusion, category: "Bridal", title: "Twin Bridal Palms" },
   { src: bridal, category: "Bridal", title: "Full Hand Bridal" },
   { src: royal, category: "Royal", title: "Royal Mandala Palms" },
   { src: arabic, category: "Arabic", title: "Modern Arabic Floral" },
