@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, ShieldCheck, Truck, Gem, Lock, Star, Quote, Phone, Instagram, MessageCircle, Award, Home as HomeIcon, Sparkles, BadgeCheck, Wallet, Zap, Heart } from "lucide-react";
-import heroImg from "@/assets/hero-mehndi.jpg";
+import heroImg from "@/assets/hero-harshi.jpg";
 import patternImg from "@/assets/mehndi-pattern.png";
 import igBridal from "@/assets/harshi-new-1.jpg";
 import igArabic from "@/assets/harshi-new-2.jpg";
