@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, ShieldCheck, Truck, Gem, Lock, Star, Quote, Phone, Instagram, MessageCircle, Award, Home as HomeIcon, Sparkles, BadgeCheck, Wallet, Zap, Heart } from "lucide-react";
-import heroImg from "@/assets/hero-mehndi.jpg";
+import heroImg from "@/assets/hero-harshi.jpg";
 import patternImg from "@/assets/mehndi-pattern.png";
 import igBridal from "@/assets/harshi-new-1.jpg";
 import igArabic from "@/assets/harshi-new-2.jpg";
@@ -53,51 +53,64 @@ function Home() {
     <div>
       <PromoBanner />
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-primary">
         <img
           src={heroImg}
-          alt="Bride's hands with intricate bridal mehndi"
-          width={1920}
-          height={1080}
-          className="absolute inset-0 size-full object-cover"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 size-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="relative mx-auto flex max-w-7xl flex-col items-start px-4 py-28 sm:px-6 md:py-40">
-          <span className="animate-fade-up rounded-full border border-gold/40 bg-background/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] text-gold backdrop-blur">
-            Premium Henna Artistry
-          </span>
-          <h1 className="animate-fade-up mt-6 max-w-3xl text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl md:text-6xl">
-            HARSHI'S <span className="text-gradient-gold">Mehndi Art</span>
-          </h1>
-          <p className="animate-fade-up mt-5 max-w-xl text-lg text-primary-foreground/85">
-            Turning every occasion into beautiful memories with stunning mehndi designs.
-          </p>
-          <div className="animate-fade-up mt-8 flex flex-wrap gap-4">
-            <Button asChild variant="gold" size="xl">
-              <Link to="/booking">Book Now</Link>
-            </Button>
-            <a
-              href={whatsappLink()}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] px-9 text-base font-medium text-white shadow transition-opacity hover:opacity-90"
-            >
-              <MessageCircle className="size-5" /> WhatsApp Now
-            </a>
-            <Button asChild variant="outlineHero" size="xl">
-              <Link to="/gallery">View Gallery</Link>
-            </Button>
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="flex min-w-0 flex-col items-start">
+            <span className="animate-fade-up rounded-full border border-gold/40 bg-background/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] text-gold backdrop-blur">
+              Premium Henna Artistry
+            </span>
+            <h1 className="animate-fade-up mt-6 max-w-3xl text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl md:text-6xl">
+              HARSHI'S <span className="text-gradient-gold">Mehndi Art</span>
+            </h1>
+            <p className="animate-fade-up mt-5 max-w-xl text-lg text-primary-foreground/85">
+              Turning every occasion into beautiful memories with stunning mehndi designs.
+            </p>
+            <div className="animate-fade-up mt-8 flex flex-wrap gap-4">
+              <Button asChild variant="gold" size="xl">
+                <Link to="/booking">Book Now</Link>
+              </Button>
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] px-9 text-base font-medium text-white shadow transition-opacity hover:opacity-90"
+              >
+                <MessageCircle className="size-5" /> WhatsApp Now
+              </a>
+              <Button asChild variant="outlineHero" size="xl">
+                <Link to="/gallery">View Gallery</Link>
+              </Button>
+            </div>
+            <div className="animate-fade-up mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-primary-foreground/90">
+              <a href={telLink()} className="flex items-center gap-2 hover:text-gold">
+                <Phone className="size-4 text-gold" /> {brand.phone}
+              </a>
+              <a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-gold">
+                <Instagram className="size-4 text-gold" /> {brand.instagram}
+              </a>
+            </div>
           </div>
-          <div className="animate-fade-up mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-primary-foreground/90">
-            <a href={telLink()} className="flex items-center gap-2 hover:text-gold">
-              <Phone className="size-4 text-gold" /> {brand.phone}
-            </a>
-            <a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-gold">
-              <Instagram className="size-4 text-gold" /> {brand.instagram}
-            </a>
+
+          <div className="animate-fade-up relative mx-auto w-full max-w-md lg:max-w-sm">
+            <div className="absolute -inset-3 rounded-[2rem] bg-gradient-gold opacity-30 blur-2xl" />
+            <img
+              src={heroImg}
+              alt="Bridal hands with intricate peacock and elephant mehndi by HARSHI'S Mehndi Art"
+              width={735}
+              height={890}
+              className="relative w-full rounded-[1.75rem] border border-gold/40 object-cover shadow-gold"
+            />
           </div>
         </div>
       </section>
+
 
       {/* About */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
