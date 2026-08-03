@@ -35,12 +35,10 @@ const items: Item[] = [
   { src: realRoyal, category: "Traditional", title: "Lotus Arch Hand" },
   { src: realElephant, category: "Royal", title: "Gold Lotus Frame" },
   { src: realFusion, category: "Bridal", title: "Twin Bridal Palms" },
-  { src: bridal, category: "Bridal", title: "Full Hand Bridal" },
-  { src: royal, category: "Royal", title: "Royal Mandala Palms" },
-  { src: arabic, category: "Arabic", title: "Modern Arabic Floral" },
-  { src: traditional, category: "Traditional", title: "Traditional Palm Art" },
-  { src: festival, category: "Festival", title: "Glitter Festival Design" },
-  { src: engagement, category: "Engagement", title: "Engagement Floral" },
+  { src: realLotus, category: "Bridal", title: "Lotus Crown Hand" },
+  { src: realArabicHand, category: "Arabic", title: "Modern Arabic Floral" },
+  { src: realFullArm, category: "Royal", title: "Royal Full-Arm Bridal" },
+  { src: realPeacockPalms, category: "Traditional", title: "Peacock & Elephant Palms" },
 ];
 
 const categories = ["All", "Bridal", "Arabic", "Royal", "Traditional", "Festival", "Engagement"];
