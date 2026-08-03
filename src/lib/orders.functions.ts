@@ -72,8 +72,7 @@ export const placeOrder = createServerFn({
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
-    console.log("USER:", userId);
-    console.log("CLAIMS:", claims);
+    console.log("[placeOrder] start for user:", userId);
 
     // Fetch product prices from DB
     const slugs = data.items.map((i) => i.slug);
@@ -84,9 +83,10 @@ export const placeOrder = createServerFn({
       .in("slug", slugs);
 
     if (prodErr) {
-      console.error(prodErr);
+      console.error("[placeOrder] product lookup failed:", prodErr);
       throw new Error(JSON.stringify(prodErr));
     }
+
 
     const priceMap = new Map(
       (products ?? []).map((p) => [

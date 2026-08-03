@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
 import { uploadPaymentScreenshot } from "@/lib/db";
+import { supabase } from "@/integrations/supabase/client";
 import { placeOrder as placeOrderFn, validateCoupon } from "@/lib/orders.functions";
 import { brand, shippingFor, upiQrUrl, upiLink } from "@/data/brand";
 import { Button } from "@/components/ui/button";
@@ -83,44 +84,107 @@ function Cart() {
   }
 
   async function placeOrder() {
-    if (!user) return;
-    if (!address.trim() || !phone.trim()) {
-      toast.error("Please enter your delivery address and phone number.");
-      return;
-    }
-    if (isOnlinePayment && !txnId.trim() && !screenshot) {
-      toast.error("Enter the transaction ID or upload a payment screenshot.");
-      return;
-    }
-    setPlacing(true);
+    console.log("Checkout started");
     try {
+      if (!user) {
+        toast.error("Please sign in to place your order.");
+        navigate({ to: "/auth" });
+        return;
+      }
+      if (!address.trim() || !phone.trim()) {
+        toast.error("Please enter your delivery address and phone number.");
+        return;
+      }
+      if (isOnlinePayment && !txnId.trim() && !screenshot) {
+        toast.error("Enter the transaction ID or upload a payment screenshot.");
+        return;
+      }
+      console.log("Validation passed");
+      console.log("Current user:", user);
+
+      setPlacing(true);
+
+      // 1) Make sure we actually have a live session — the serverFn bearer
+      //    middleware silently sends no token when the session is stale.
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Checkout failed: session error", sessionError);
+        toast.error(`Session error: ${sessionError.message}`);
+        return;
+      }
+      if (!sessionData.session?.access_token) {
+        console.error("Checkout failed: no active session");
+        toast.error("Your session expired. Please sign in again.");
+        navigate({ to: "/auth" });
+        return;
+      }
+
+      // 2) Optional payment screenshot upload.
       let screenshotPath: string | null = null;
       if (screenshot) {
-        screenshotPath = await uploadPaymentScreenshot(screenshot, user.id);
+        try {
+          screenshotPath = await uploadPaymentScreenshot(screenshot, user.id);
+          console.log("Screenshot uploaded:", screenshotPath);
+        } catch (uploadErr) {
+          console.error("Checkout failed: screenshot upload", uploadErr);
+          toast.error(
+            `Screenshot upload failed: ${
+              uploadErr instanceof Error ? uploadErr.message : JSON.stringify(uploadErr)
+            }`,
+          );
+          return;
+        }
       }
-      // The server recomputes all prices/totals from authoritative DB data.
-      await placeOrderFn({
-        data: {
-          items: items.map(({ product, qty }) => ({ slug: product.slug, qty })),
-          address,
-          phone,
-          payment_method: method,
-          coupon: coupon.trim() || null,
-          transaction_id: txnId || null,
-          payment_screenshot_path: screenshotPath,
-        },
-      });
+
+      // 3) Send the order. The server recomputes all prices/totals from the DB.
+      const payload = {
+        items: items.map(({ product, qty }) => ({ slug: product.slug, qty })),
+        address,
+        phone,
+        payment_method: method,
+        coupon: coupon.trim() || null,
+        transaction_id: txnId || null,
+        payment_screenshot_path: screenshotPath,
+      };
+      console.log("Order payload:", payload);
+      console.log("Sending order...");
+
+      const result = await placeOrderFn({ data: payload });
+      console.log("Order inserted:", result);
+
       clear();
       setOpen(false);
       toast.success("Order placed successfully! We'll be in touch.");
       navigate({ to: "/" });
     } catch (err) {
-      toast.error("Couldn't place order. Please try again.");
-      console.error(err);
+      console.error("Checkout failed:", err);
+      let message = "Unknown error";
+      if (err instanceof Error) message = err.message;
+      else if (typeof err === "string") message = err;
+      else {
+        try {
+          message = JSON.stringify(err);
+        } catch {
+          message = String(err);
+        }
+      }
+      // Surface Supabase/Postgres error details when the server passed them through.
+      try {
+        const parsed = JSON.parse(message);
+        if (parsed && typeof parsed === "object") {
+          message = [parsed.message, parsed.details, parsed.hint, parsed.code]
+            .filter(Boolean)
+            .join(" · ");
+        }
+      } catch {
+        /* not JSON */
+      }
+      toast.error(`Couldn't place order: ${message}`);
     } finally {
       setPlacing(false);
     }
   }
+
 
 
   return (
