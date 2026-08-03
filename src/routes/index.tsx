@@ -7,7 +7,7 @@ import igArabic from "@/assets/harshi-new-2.jpg";
 import igRoyal from "@/assets/harshi-new-3.jpg";
 import igTraditional from "@/assets/harshi-new-4.jpg";
 import igFestival from "@/assets/harshi-new-5.jpg";
-import igEngagement from "@/assets/gallery-engagement.jpg";
+import igEngagement from "@/assets/harshi-new-6.jpg";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ProductCard";
 import { products, homeCategories, testimonials } from "@/data/catalog";
