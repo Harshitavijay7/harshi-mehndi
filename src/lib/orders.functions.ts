@@ -72,21 +72,19 @@ export const placeOrder = createServerFn({
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
-    console.log("[placeOrder] start for user:", userId);
+    console.log("[placeOrder] Started");
 
-    // Fetch product prices from DB
     const slugs = data.items.map((i) => i.slug);
 
     const { data: products, error: prodErr } = await supabase
       .from("products")
-      .select("slug, name, price, discount_price")
+      .select("slug,name,price,discount_price")
       .in("slug", slugs);
 
     if (prodErr) {
-      console.error("[placeOrder] product lookup failed:", prodErr);
+      console.error(prodErr);
       throw new Error(JSON.stringify(prodErr));
     }
-
 
     const priceMap = new Map(
       (products ?? []).map((p) => [
@@ -115,13 +113,13 @@ export const placeOrder = createServerFn({
       return {
         slug: i.slug,
         name: p.name,
-        price: p.price,
         qty: i.qty,
+        price: p.price,
       };
     });
 
     const couponRate = data.coupon
-      ? COUPONS[data.coupon.trim().toUpperCase()] ?? 0
+      ? COUPONS[data.coupon.toUpperCase()] ?? 0
       : 0;
 
     const discount = Math.round(subtotal * couponRate);
@@ -129,9 +127,9 @@ export const placeOrder = createServerFn({
     const taxable = subtotal - discount;
 
     const shipping =
-      taxable <= 0
+      taxable >= SHIPPING_FREE_ABOVE
         ? 0
-        : taxable >= SHIPPING_FREE_ABOVE
+        : taxable <= 0
         ? 0
         : SHIPPING_FLAT;
 
@@ -139,35 +137,38 @@ export const placeOrder = createServerFn({
 
     const isOnline = data.payment_method !== "COD";
 
+    console.log("Creating Order...");
+
     const { data: order, error } = await supabase
       .from("orders")
       .insert({
         user_id: userId,
 
-        customer_name:
-          (claims?.user_metadata as
-            | { full_name?: string }
-            | undefined)?.full_name ??
-          (claims?.email as string | undefined) ??
-          "Customer",
+        full_name:
+          (claims?.user_metadata as { full_name?: string } | undefined)
+            ?.full_name ?? "Customer",
 
-        customer_email:
-          (claims?.email as string | undefined) ??
-          null,
+        phone: data.phone,
 
-        customer_phone: data.phone,
+       email:
+  (claims?.email as string | undefined) ?? null,
 
-        shipping_address: data.address,
+customer_email:
+  (claims?.email as string | undefined) ?? null,
+
+        address: data.address,
+
+        city: null,
+
+        pincode: null,
 
         items: lineItems,
 
         subtotal,
 
+        shipping,
+
         total,
-
-        notes: `Shipping: ₹${shipping}${discount ? ` | Discount: ₹${discount}` : ""}`,
-
-        status: "pending",
 
         payment_method: data.payment_method,
 
@@ -176,22 +177,25 @@ export const placeOrder = createServerFn({
           : "cod",
 
         transaction_id:
-          data.transaction_id || null,
+          data.transaction_id ?? null,
 
         payment_screenshot_path:
-          data.payment_screenshot_path || null,
+          data.payment_screenshot_path ?? null,
+
+        status: "pending",
       })
-      .select("id,total")
+      .select()
       .single();
 
     if (error) {
-      console.error("SUPABASE ORDER ERROR:", error);
+      console.error("SUPABASE ERROR", error);
       throw new Error(JSON.stringify(error));
     }
+
+    console.log("ORDER CREATED", order);
 
     return {
       id: order.id,
       total: order.total,
     };
   });
-    
