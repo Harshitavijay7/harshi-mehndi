@@ -127,6 +127,63 @@ export function Navbar() {
               </span>
             )}
           </Link>
+
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  aria-label="Account menu"
+                  className="ml-1 flex size-9 items-center justify-center overflow-hidden rounded-full bg-gradient-gold text-sm font-bold text-gold-foreground"
+                >
+                  {avatar ? (
+                    <img src={avatar} alt="" className="size-full object-cover" />
+                  ) : (
+                    (displayName || "U").slice(0, 1).toUpperCase()
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="leading-tight">
+                  <span className="block truncate">{displayName}</span>
+                  <span className="block truncate text-xs font-normal text-muted-foreground">
+                    {user.email}
+                  </span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/account">
+                    <LayoutDashboard className="mr-2 size-4" /> My Account
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/account/orders">
+                    <Package className="mr-2 size-4" /> My Orders
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/account/profile">
+                    <User className="mr-2 size-4" /> Profile
+                  </Link>
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin">
+                      <ShieldAlert className="mr-2 size-4" /> Admin Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={handleSignOut} className="text-destructive">
+                  <LogOut className="mr-2 size-4" /> Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="outline" size="sm" className="ml-1 hidden sm:inline-flex">
+              <Link to="/auth">Sign in</Link>
+            </Button>
+          )}
+
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen((o) => !o)} aria-label="Menu">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </Button>
