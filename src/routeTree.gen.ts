@@ -23,6 +23,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminProductsRouteImport } from './routes/_authenticated/admin.products'
@@ -102,6 +103,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/wishlist': typeof WishlistRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/product/$slug': typeof ProductSlugRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/wishlist': typeof WishlistRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/wishlist': typeof WishlistRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/product/$slug': typeof ProductSlugRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/store'
     | '/wishlist'
+    | '/account'
     | '/admin'
     | '/product/$slug'
     | '/admin/analytics'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/store'
     | '/wishlist'
+    | '/account'
     | '/product/$slug'
     | '/admin/analytics'
     | '/admin/bookings'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/store'
     | '/wishlist'
+    | '/_authenticated/account'
     | '/_authenticated/admin'
     | '/product/$slug'
     | '/_authenticated/admin/analytics'
@@ -420,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
@@ -514,10 +533,12 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
 }
 
@@ -542,13 +563,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
