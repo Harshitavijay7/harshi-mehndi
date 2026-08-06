@@ -1,8 +1,32 @@
-import { Link } from "@tanstack/react-router";
-import { Heart, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { Link, useRouter } from "@tanstack/react-router";
+import {
+  Heart,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Moon,
+  Package,
+  ShieldAlert,
+  ShoppingBag,
+  Sun,
+  User,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { loadAvatar } from "@/lib/account";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 
 const links = [
   { to: "/", label: "Home" },
