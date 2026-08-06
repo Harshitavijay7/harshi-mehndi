@@ -39,8 +39,12 @@ const links = [
 
 export function Navbar() {
   const { count, wishlist } = useCart();
+  const { user, isAdmin, signOut } = useAuth();
+  const router = useRouter();
+  const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [avatar, setAvatar] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("harshi_theme") === "dark";
@@ -48,12 +52,36 @@ export function Navbar() {
     document.documentElement.classList.toggle("dark", saved);
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      setAvatar(null);
+      return;
+    }
+    const sync = () => setAvatar(loadAvatar(user.id));
+    sync();
+    window.addEventListener("harshi-avatar", sync);
+    return () => window.removeEventListener("harshi-avatar", sync);
+  }, [user]);
+
   const toggleTheme = () => {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("harshi_theme", next ? "dark" : "light");
   };
+
+  const handleSignOut = async () => {
+    await qc.cancelQueries();
+    qc.clear();
+    await signOut();
+    router.navigate({ to: "/auth", replace: true });
+  };
+
+  const displayName =
+    (user?.user_metadata as { full_name?: string } | undefined)?.full_name ??
+    user?.email?.split("@")[0] ??
+    "";
+
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-lg">
