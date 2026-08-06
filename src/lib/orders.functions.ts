@@ -144,31 +144,22 @@ export const placeOrder = createServerFn({
       .insert({
         user_id: userId,
 
-        full_name:
+        customer_name:
           (claims?.user_metadata as { full_name?: string } | undefined)
             ?.full_name ?? "Customer",
 
-        phone: data.phone,
+        customer_phone: data.phone,
 
-       email:
-  (claims?.email as string | undefined) ?? null,
+        customer_email: (claims?.email as string | undefined) ?? null,
 
-customer_email:
-  (claims?.email as string | undefined) ?? null,
-
-        address: data.address,
-
-        city: null,
-
-        pincode: null,
+        shipping_address: data.address,
 
         items: lineItems,
 
         subtotal,
 
-        shipping,
-
         total,
+
 
         payment_method: data.payment_method,
 
