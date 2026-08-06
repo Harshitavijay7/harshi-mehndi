@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/account/security")({
       { name: "description", content: "Change your password and manage your account session." },
     ],
   }),
-  component: Security;
+  component: Security,
 });
 
 function Security() {
