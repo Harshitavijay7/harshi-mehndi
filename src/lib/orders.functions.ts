@@ -139,44 +139,48 @@ export const placeOrder = createServerFn({
 
     console.log("Creating Order...");
 
+    const userEmail = (claims?.email as string | undefined) ?? null;
+
+    const insertPayload = {
+      user_id: userId,
+
+      full_name:
+        (claims?.user_metadata as { full_name?: string } | undefined)
+          ?.full_name ?? "Customer",
+
+      phone: data.phone,
+
+      email: userEmail,
+      customer_email: userEmail,
+
+      address: data.address,
+
+      items: lineItems,
+
+      subtotal,
+
+      shipping,
+
+      total,
+
+      payment_method: data.payment_method,
+
+      payment_status: isOnline ? "submitted" : "cod",
+
+      transaction_id: data.transaction_id ?? null,
+
+      payment_screenshot_path: data.payment_screenshot_path ?? null,
+
+      status: "pending",
+    };
+
     const { data: order, error } = await supabase
       .from("orders")
-      .insert({
-        user_id: userId,
-
-        customer_name:
-          (claims?.user_metadata as { full_name?: string } | undefined)
-            ?.full_name ?? "Customer",
-
-        customer_phone: data.phone,
-
-        customer_email: (claims?.email as string | undefined) ?? null,
-
-        shipping_address: data.address,
-
-        items: lineItems,
-
-        subtotal,
-
-        total,
-
-
-        payment_method: data.payment_method,
-
-        payment_status: isOnline
-          ? "submitted"
-          : "cod",
-
-        transaction_id:
-          data.transaction_id ?? null,
-
-        payment_screenshot_path:
-          data.payment_screenshot_path ?? null,
-
-        status: "pending",
-      })
+      // Generated types are stale relative to the live orders table.
+      .insert(insertPayload as never)
       .select()
       .single();
+
 
     if (error) {
       console.error("SUPABASE ERROR", error);
