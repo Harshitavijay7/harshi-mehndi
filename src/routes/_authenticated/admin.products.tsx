@@ -275,11 +275,21 @@ function ProductDialog({
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name.trim()) return toast.error("Product name is required");
+    if (!form.category) return toast.error("Category is required");
+    if (!form.price || Number(form.price) <= 0) return toast.error("Enter a valid price");
+    if (form.discount_price && Number(form.discount_price) >= Number(form.price))
+      return toast.error("Discount price must be lower than price");
     setBusy(true);
     try {
       const payload = {
-        name: form.name,
-        slug: form.slug || form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        name: form.name.trim(),
+        slug:
+          (form.slug || form.name)
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, ""),
         category: form.category,
         price: Number(form.price) || 0,
         discount_price: form.discount_price ? Number(form.discount_price) : null,
@@ -294,10 +304,10 @@ function ProductDialog({
       };
       if (product) await updateProduct(product.id, payload);
       else await createProduct(payload as never);
-      toast.success(product ? "Product updated" : "Product created");
+      toast.success(product ? "Product updated successfully" : "Product added successfully");
       onSaved();
     } catch (err) {
-      toast.error("Save failed (admin only)");
+      toast.error(err instanceof Error ? err.message : "Save failed (admin only)");
       console.error(err);
     } finally {
       setBusy(false);
@@ -306,11 +316,14 @@ function ProductDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[90vh] max-w-lg flex-col gap-0 p-0">
+        <DialogHeader className="border-b border-border px-6 py-4">
           <DialogTitle>{product ? "Edit Product" : "Add Product"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={save} className="grid gap-4 sm:grid-cols-2">
+        <form onSubmit={save} className="flex min-h-0 flex-1 flex-col">
+          <div className="grid min-h-0 flex-1 gap-4 overflow-y-auto px-6 py-4 sm:grid-cols-2">
+          <div className="sm:col-span-2"><Label className="mb-1.5 block">Slug (optional)</Label><Input placeholder="auto-generated from name" value={form.slug} onChange={(e) => set("slug", e.target.value)} /></div>
+
           <div className="sm:col-span-2"><Label className="mb-1.5 block">Name</Label><Input required value={form.name} onChange={(e) => set("name", e.target.value)} /></div>
           <div><Label className="mb-1.5 block">Category</Label>
             <Select value={form.category} onValueChange={(v) => set("category", v)}>
