@@ -138,7 +138,10 @@ function MyOrders() {
                       <span
                         className={`size-3 rounded-full ${done ? "bg-primary" : "bg-muted-foreground/30"}`}
                       />
-                      <span className="text-[11px] capitalize text-muted-foreground">{s}</span>
+                      <span className="text-center text-[10px] leading-tight text-muted-foreground">
+                        {STEP_LABELS[s] ?? s}
+                      </span>
+
                     </li>
                   );
                 })}
