@@ -27,7 +27,26 @@ export const Route = createFileRoute("/_authenticated/account/orders")({
   component: MyOrders,
 });
 
-const STEPS = ["pending", "confirmed", "shipped", "delivered"] as const;
+const STEPS = [
+  "pending",
+  "confirmed",
+  "preparing",
+  "packed",
+  "shipped",
+  "out_for_delivery",
+  "delivered",
+] as const;
+
+const STEP_LABELS: Record<string, string> = {
+  pending: "Pending",
+  confirmed: "Confirmed",
+  preparing: "Preparing",
+  packed: "Packed",
+  shipped: "Shipped",
+  out_for_delivery: "Out for Delivery",
+  delivered: "Delivered",
+};
+
 
 type OrderItem = { name?: string; title?: string; qty?: number; quantity?: number; price?: number };
 
