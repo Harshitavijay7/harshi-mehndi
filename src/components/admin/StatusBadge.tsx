@@ -3,6 +3,7 @@ import {
   ORDER_STATUS_TONE,
   BOOKING_STATUS_TONE,
   TONE_CLASSES,
+  ORDER_STATUS_LABELS,
   type StatusTone,
 } from "@/lib/adminUtils";
 
@@ -22,7 +23,7 @@ export function StatusBadge({
         TONE_CLASSES[tone],
       )}
     >
-      {status}
+      {kind === "order" ? ORDER_STATUS_LABELS[status?.toLowerCase()] ?? status : status}
     </span>
   );
 }
