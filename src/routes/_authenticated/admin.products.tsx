@@ -358,10 +358,14 @@ function ProductDialog({
             <Input className="mt-2" placeholder="cones.jpg or https://..." value={form.image_key} onChange={(e) => set("image_key", e.target.value)} />
           </div>
           <div className="sm:col-span-2"><Label className="mb-1.5 block">Description</Label><Textarea rows={3} value={form.description} onChange={(e) => set("description", e.target.value)} /></div>
-          <DialogFooter className="sm:col-span-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" variant="hero" disabled={busy}>{busy ? "Saving..." : "Save"}</Button>
+          </div>
+          <DialogFooter className="sticky bottom-0 flex-row justify-end gap-2 border-t border-border bg-background px-6 py-4">
+            <Button type="button" variant="outline" className="flex-1 sm:flex-none" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" variant="hero" className="flex-1 sm:flex-none" disabled={busy || uploading}>
+              {busy ? "Saving..." : product ? "Save Changes" : "Add Product"}
+            </Button>
           </DialogFooter>
+
         </form>
       </DialogContent>
     </Dialog>
