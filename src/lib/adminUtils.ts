@@ -32,14 +32,34 @@ export function exportToCsv(filename: string, rows: Record<string, unknown>[]) {
 
 export type StatusTone = "yellow" | "blue" | "purple" | "green" | "red" | "gray";
 
+export const ORDER_STATUSES: { value: string; label: string }[] = [
+  { value: "pending", label: "Pending" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "preparing", label: "Preparing" },
+  { value: "packed", label: "Packed" },
+  { value: "shipped", label: "Shipped" },
+  { value: "out_for_delivery", label: "Out for Delivery" },
+  { value: "delivered", label: "Delivered" },
+  { value: "cancelled", label: "Cancelled" },
+];
+
+export const ORDER_STATUS_LABELS: Record<string, string> = Object.fromEntries(
+  ORDER_STATUSES.map((s) => [s.value, s.label]),
+);
+
 export const ORDER_STATUS_TONE: Record<string, StatusTone> = {
   pending: "yellow",
+  confirmed: "blue",
   processing: "blue",
+  preparing: "blue",
+  packed: "purple",
   shipped: "purple",
+  out_for_delivery: "purple",
   delivered: "green",
   completed: "green",
   cancelled: "red",
 };
+
 
 export const BOOKING_STATUS_TONE: Record<string, StatusTone> = {
   pending: "yellow",

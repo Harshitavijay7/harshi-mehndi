@@ -27,7 +27,26 @@ export const Route = createFileRoute("/_authenticated/account/orders")({
   component: MyOrders,
 });
 
-const STEPS = ["pending", "confirmed", "shipped", "delivered"] as const;
+const STEPS = [
+  "pending",
+  "confirmed",
+  "preparing",
+  "packed",
+  "shipped",
+  "out_for_delivery",
+  "delivered",
+] as const;
+
+const STEP_LABELS: Record<string, string> = {
+  pending: "Pending",
+  confirmed: "Confirmed",
+  preparing: "Preparing",
+  packed: "Packed",
+  shipped: "Shipped",
+  out_for_delivery: "Out for Delivery",
+  delivered: "Delivered",
+};
+
 
 type OrderItem = { name?: string; title?: string; qty?: number; quantity?: number; price?: number };
 
@@ -119,7 +138,10 @@ function MyOrders() {
                       <span
                         className={`size-3 rounded-full ${done ? "bg-primary" : "bg-muted-foreground/30"}`}
                       />
-                      <span className="text-[11px] capitalize text-muted-foreground">{s}</span>
+                      <span className="text-center text-[10px] leading-tight text-muted-foreground">
+                        {STEP_LABELS[s] ?? s}
+                      </span>
+
                     </li>
                   );
                 })}
