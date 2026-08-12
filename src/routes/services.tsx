@@ -55,9 +55,17 @@ function Services() {
             key={s.id}
             className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-gold"
           >
-            <div className="flex aspect-[16/10] items-center justify-center bg-gradient-to-br from-primary/15 to-gold/20">
-              <span className="text-5xl">🖐️</span>
+            <div className="aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/15 to-gold/20">
+              <img
+                src={serviceImages[s.id] ?? galleryBridal}
+                alt={`${s.title} design by HARSHI'S Mehndi Art`}
+                loading="lazy"
+                width={800}
+                height={500}
+                className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
             </div>
+
             <div className="flex flex-1 flex-col p-6">
               <span className="w-fit rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-gold-foreground">
                 {s.tag}
