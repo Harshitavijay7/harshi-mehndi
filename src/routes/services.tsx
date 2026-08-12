@@ -2,6 +2,28 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { serviceCategories } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
+import galleryBridal from "@/assets/harshi-new-1.jpg";
+import galleryPeacock from "@/assets/harshi-new-2.jpg";
+import galleryRoyal from "@/assets/harshi-new-3.jpg";
+import galleryElephant from "@/assets/harshi-new-4.jpg";
+import galleryFusion from "@/assets/harshi-new-5.jpg";
+import galleryLotus from "@/assets/harshi-new-6.jpg";
+import galleryArabic from "@/assets/harshi-new-7.jpg";
+import galleryFullArm from "@/assets/harshi-new-8.jpg";
+import galleryPalms from "@/assets/harshi-new-9.jpg";
+
+const serviceImages: Record<string, string> = {
+  s1: galleryBridal,
+  s2: galleryArabic,
+  s3: galleryLotus,
+  s4: galleryPeacock,
+  s5: galleryFusion,
+  s6: galleryRoyal,
+  s7: galleryElephant,
+  s8: galleryPalms,
+  s9: galleryFullArm,
+};
+
 
 export const Route = createFileRoute("/services")({
   head: () => ({
