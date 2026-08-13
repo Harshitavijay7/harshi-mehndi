@@ -133,7 +133,7 @@ function DashboardHome() {
                 <div key={b.id} className="flex items-center justify-between gap-3 border-b border-border/60 pb-3 last:border-0">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{b.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{b.event_type} · {b.event_date}</p>
+                    <p className="text-xs text-muted-foreground">{b.service} · {b.event_date}</p>
                   </div>
                   <StatusBadge status={b.status} kind="booking" />
                 </div>

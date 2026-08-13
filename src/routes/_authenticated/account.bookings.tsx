@@ -39,7 +39,7 @@ function MyBookings() {
             <div key={b.id} className="rounded-2xl border border-border/70 bg-card p-5 shadow-soft">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="font-semibold capitalize">{b.event_type ?? "Mehndi service"}</p>
+                  <p className="font-semibold capitalize">{b.service ?? "Mehndi service"}</p>
                   <p className="text-sm text-muted-foreground">
                     {b.event_date ? new Date(b.event_date).toLocaleDateString("en-IN") : "Date TBC"}
                     {b.time_slot ? ` · ${b.time_slot}` : ""}
@@ -47,7 +47,7 @@ function MyBookings() {
                 </div>
                 <StatusBadge status={b.status ?? "pending"} />
               </div>
-              {b.requirements && <p className="mt-3 text-sm text-muted-foreground">{b.requirements}</p>}
+              {b.special_requirements && <p className="mt-3 text-sm text-muted-foreground">{b.special_requirements}</p>}
 
             </div>
           ))}
