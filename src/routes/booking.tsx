@@ -85,14 +85,26 @@ function Booking() {
               user_id: user.id,
               full_name: form.full_name,
               phone: form.phone,
-              email: form.email || null,
-              event_type: form.event_type || null,
+              email: form.email || user.email || null,
+              service: form.service || null,
               event_date: form.event_date || null,
               time_slot: slot,
-              guests: form.guests ? Number(form.guests) : null,
-              address: form.address || null,
-              requirements: form.requirements || null,
+              location: form.location || null,
+              special_requirements: form.special_requirements || null,
+              status: "pending",
             });
+            setForm({
+              full_name: "",
+              phone: "",
+              email: "",
+              service: "",
+              event_date: "",
+              location: "",
+              special_requirements: "",
+            });
+            setSlot("");
+            qc.invalidateQueries({ queryKey: ["my-bookings"] });
+            qc.invalidateQueries({ queryKey: ["admin-bookings"] });
             setDone(true);
             toast.success("Booking submitted successfully!");
           } catch (err) {
