@@ -2,7 +2,9 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-export type BookingRow = Tables<"bookings">;
+export type { BookingRecord } from "@/lib/db";
+import type { BookingRecord } from "@/lib/db";
+export type BookingRow = BookingRecord;
 export type OrderRow = Tables<"orders">;
 export type ProfileRow = Tables<"profiles">;
 
@@ -12,7 +14,7 @@ export async function fetchMyBookings(): Promise<BookingRow[]> {
     .select("*")
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as BookingRow[];
 }
 
 export async function fetchMyProfile(userId: string): Promise<ProfileRow | null> {
