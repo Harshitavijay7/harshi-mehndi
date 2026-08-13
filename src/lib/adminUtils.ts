@@ -61,14 +61,28 @@ export const ORDER_STATUS_TONE: Record<string, StatusTone> = {
 };
 
 
+export const BOOKING_STATUSES = [
+  { value: "pending", label: "Pending" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "in_progress", label: "In Progress" },
+  { value: "completed", label: "Completed" },
+  { value: "cancelled", label: "Cancelled" },
+];
+
+export const BOOKING_STATUS_LABELS: Record<string, string> = Object.fromEntries(
+  BOOKING_STATUSES.map((s) => [s.value, s.label]),
+);
+
 export const BOOKING_STATUS_TONE: Record<string, StatusTone> = {
   pending: "yellow",
   confirmed: "blue",
   approved: "blue",
+  in_progress: "purple",
   completed: "green",
   cancelled: "red",
   rejected: "red",
 };
+
 
 export const TONE_CLASSES: Record<StatusTone, string> = {
   yellow: "bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300",

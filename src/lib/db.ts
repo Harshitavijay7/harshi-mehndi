@@ -128,25 +128,60 @@ export async function updateOrderStatus(id: string, status: string) {
 }
 
 // ===================== BOOKINGS =====================
-export async function createBooking(payload: TablesInsert<"bookings">) {
-  const { data, error } = await supabase.from("bookings").insert(payload).select().single();
+/** Live public.bookings schema (generated types can lag behind the database). */
+export type BookingRecord = {
+  id: string;
+  user_id: string | null;
+  full_name: string;
+  phone: string;
+  email: string | null;
+  service: string | null;
+  event_date: string | null;
+  time_slot: string | null;
+  location: string | null;
+  special_requirements: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type BookingInsert = {
+  user_id: string;
+  full_name: string;
+  phone: string;
+  email: string | null;
+  service: string | null;
+  event_date: string | null;
+  time_slot: string | null;
+  location: string | null;
+  special_requirements: string | null;
+  status: string;
+};
+
+export async function createBooking(payload: BookingInsert): Promise<BookingRecord> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert(payload as never)
+    .select()
+    .single();
   if (error) throw error;
-  return data;
+  return data as unknown as BookingRecord;
 }
 
-export async function fetchAllBookings(): Promise<BookingRow[]> {
+export async function fetchAllBookings(): Promise<BookingRecord[]> {
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as BookingRecord[];
 }
 
 export async function updateBookingStatus(id: string, status: string) {
   const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
   if (error) throw error;
 }
+
 
 // ===================== CUSTOMERS =====================
 export async function fetchCustomers(): Promise<ProfileRow[]> {

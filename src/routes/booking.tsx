@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { brand, whatsappLink } from "@/data/brand";
 import { createBooking } from "@/lib/db";
 import { useAuth } from "@/lib/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/booking")({
   head: () => ({
@@ -29,6 +30,7 @@ const slots = ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "07:0
 
 function Booking() {
   const { user } = useAuth();
+  const qc = useQueryClient();
   const [slot, setSlot] = useState("");
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -36,11 +38,10 @@ function Booking() {
     full_name: "",
     phone: "",
     email: "",
-    event_type: "",
+    service: "",
     event_date: "",
-    guests: "",
-    address: "",
-    requirements: "",
+    location: "",
+    special_requirements: "",
   });
 
   const set = (key: keyof typeof form, value: string) => setForm((f) => ({ ...f, [key]: value }));
@@ -86,14 +87,26 @@ function Booking() {
               user_id: user.id,
               full_name: form.full_name,
               phone: form.phone,
-              email: form.email || null,
-              event_type: form.event_type || null,
+              email: form.email || user.email || null,
+              service: form.service || null,
               event_date: form.event_date || null,
               time_slot: slot,
-              guests: form.guests ? Number(form.guests) : null,
-              address: form.address || null,
-              requirements: form.requirements || null,
+              location: form.location || null,
+              special_requirements: form.special_requirements || null,
+              status: "pending",
             });
+            setForm({
+              full_name: "",
+              phone: "",
+              email: "",
+              service: "",
+              event_date: "",
+              location: "",
+              special_requirements: "",
+            });
+            setSlot("");
+            qc.invalidateQueries({ queryKey: ["my-bookings"] });
+            qc.invalidateQueries({ queryKey: ["admin-bookings"] });
             setDone(true);
             toast.success("Booking submitted successfully!");
           } catch (err) {
@@ -118,8 +131,8 @@ function Booking() {
           <Field label="Event Type" required>
             <select
               required
-              value={form.event_type}
-              onChange={(e) => set("event_type", e.target.value)}
+              value={form.service}
+              onChange={(e) => set("service", e.target.value)}
               className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               <option value="" disabled>
@@ -135,13 +148,10 @@ function Booking() {
           <Field label="Event Date" required>
             <Input required type="date" value={form.event_date} onChange={(e) => set("event_date", e.target.value)} />
           </Field>
-          <Field label="Number of Guests">
-            <Input type="number" min={1} value={form.guests} onChange={(e) => set("guests", e.target.value)} placeholder="e.g. 5" />
-          </Field>
         </div>
 
-        <Field label="Address">
-          <Input value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="Where should we come? (for home service)" />
+        <Field label="Location">
+          <Input value={form.location} onChange={(e) => set("location", e.target.value)} placeholder="Where should we come? (for home service)" />
         </Field>
 
         <div>
@@ -166,7 +176,7 @@ function Booking() {
         </div>
 
         <Field label="Special Requirements">
-          <Textarea value={form.requirements} onChange={(e) => set("requirements", e.target.value)} placeholder="Describe the design style you'd love (Arabic, royal, bridal...) and any special requests" rows={3} />
+          <Textarea value={form.special_requirements} onChange={(e) => set("special_requirements", e.target.value)} placeholder="Describe the design style you'd love (Arabic, royal, bridal...) and any special requests" rows={3} />
         </Field>
         {!user && (
           <p className="rounded-lg border border-border/70 bg-muted/30 p-3 text-sm text-muted-foreground">

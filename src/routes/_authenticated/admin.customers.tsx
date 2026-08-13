@@ -149,7 +149,7 @@ function CustomerDetailDialog({
                 <div className="max-h-48 space-y-2 overflow-y-auto">
                   {data.bookings.map((b) => (
                     <div key={b.id} className="flex items-center justify-between rounded-lg border border-border/60 p-2 text-sm">
-                      <span>{b.event_type ?? "Booking"}</span>
+                      <span>{b.service ?? "Booking"}</span>
                       <span className="text-muted-foreground">{b.event_date ?? "—"}</span>
                       <StatusBadge status={b.status} kind="booking" />
                     </div>

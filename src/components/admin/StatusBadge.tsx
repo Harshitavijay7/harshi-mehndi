@@ -4,6 +4,7 @@ import {
   BOOKING_STATUS_TONE,
   TONE_CLASSES,
   ORDER_STATUS_LABELS,
+  BOOKING_STATUS_LABELS,
   type StatusTone,
 } from "@/lib/adminUtils";
 
@@ -15,7 +16,9 @@ export function StatusBadge({
   kind?: "order" | "booking";
 }) {
   const map = kind === "booking" ? BOOKING_STATUS_TONE : ORDER_STATUS_TONE;
-  const tone: StatusTone = map[status?.toLowerCase()] ?? "gray";
+  const key = status?.toLowerCase();
+  const tone: StatusTone = map[key] ?? "gray";
+  const labels = kind === "booking" ? BOOKING_STATUS_LABELS : ORDER_STATUS_LABELS;
   return (
     <span
       className={cn(
@@ -23,7 +26,7 @@ export function StatusBadge({
         TONE_CLASSES[tone],
       )}
     >
-      {kind === "order" ? ORDER_STATUS_LABELS[status?.toLowerCase()] ?? status : status}
+      {labels[key] ?? status}
     </span>
   );
 }
