@@ -36,11 +36,10 @@ function Booking() {
     full_name: "",
     phone: "",
     email: "",
-    event_type: "",
+    service: "",
     event_date: "",
-    guests: "",
-    address: "",
-    requirements: "",
+    location: "",
+    special_requirements: "",
   });
 
   const set = (key: keyof typeof form, value: string) => setForm((f) => ({ ...f, [key]: value }));
