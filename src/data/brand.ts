@@ -3,8 +3,8 @@ export const brand = {
   domain: "harshismehndi.com",
   phone: "+91 9427019910",
   phoneRaw: "919427019910",
-  instagram: "@harshiis._.art_",
-  instagramUrl: "https://www.instagram.com/harshiis._.art_/",
+  instagram: "@harrshimehndiart",
+  instagramUrl: "https://www.instagram.com/harrshimehndiart/",
   upiId: "harshitalalwani678@oksbi",
   whatsappMessage: "Hello HARSHI'S Mehndi Art, I would like to book a mehndi appointment.",
 };
